@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | CampusConnect</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="common.css">
+</head>
+<body>
+
+  <div class="login-wrapper">
+    <div class="login-box">
+
+      <h2>Login</h2>
+
+      <form id="loginForm">
+        <label>Username</label>
+        <input type="text" placeholder="Enter username" required>
+
+        <label>Email</label>
+        <input type="email" id="email" placeholder="example@college.edu" required>
+
+        <label>Password</label>
+        <input type="password" required>
+
+        <button type="submit">Login</button>
+      </form>
+
+      <p class="error" id="errorMsg"></p>
+
+      <p class="note">
+        This platform is accessible only to students registered by college instructor
+      </p>
+
+    </div>
+  </div>
+
+  
+  <script src="login.js"></script>
+</body>
+</html>
+
