@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications | CampusConnect</title>
+
+
+  <link rel="stylesheet" href="common.css">
+
+  <link rel="stylesheet" href="notification.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  
+  <header class="topbar">
+    <div class="logo">CampusConnect</div>
+    <nav class="nav-links">
+      <a href="profile.html">Profile</a>
+      <a href="feed.html">Feed</a>
+      <a href="message.html">Messages</a>
+      <a href="notification.html" class="active">Notifications</a>
+      <a href="event.html">Events</a>
+      <a href="more.html">More</a>
+    </nav>
+  </header>
+
+  <main class="notifications-container">
+    <h2>Notifications</h2>
+
+    <div class="notification-list">
+      
+      <div class="notification unread">
+        <div class="icon">📢</div>
+        <div class="content">
+          <p><strong>Hackathon Reminder</strong> – Don’t forget to register for Friday’s hackathon!</p>
+          <span class="time">2h ago</span>
+        </div>
+      </div>
+
+      <div class="notification unread">
+        <div class="icon">📝</div>
+        <div class="content">
+          <p><strong>New Assignment Posted</strong> – Check your dashboard for details.</p>
+          <span class="time">5h ago</span>
+        </div>
+      </div>
+
+      
+      <div class="notification">
+        <div class="icon">🎓</div>
+        <div class="content">
+          <p><strong>Welcome Post</strong> – Welcome new students to CampusConnect!</p>
+          <span class="time">1d ago</span>
+        </div>
+      </div>
+
+      <div class="notification">
+        <div class="icon">⚙️</div>
+        <div class="content">
+          <p><strong>Profile Updated</strong> – Your profile was successfully updated.</p>
+          <span class="time">3d ago</span>
+        </div>
+      </div>
+
+      <div class="notification">
+        <div class="icon">💬</div>
+        <div class="content">
+          <p><strong>Message from Rahul</strong> – "Are we meeting tomorrow?"</p>
+          <span class="time">5d ago</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  
+  <script>
+    document.querySelectorAll('.notification.unread').forEach(n => {
+      n.addEventListener('click', () => {
+        n.classList.remove('unread');
+      });
+    });
+  </script>
+
+</body>
+</html>
