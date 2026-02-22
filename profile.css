@@ -1,0 +1,145 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at top left, #1a0b2e, #050b12);
+  color: #e5e7eb;
+  min-height: 100vh;
+}
+
+
+.topbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 64px;
+  background: rgba(5, 11, 18, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  z-index: 100;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.nav-links {
+  display: flex;
+  gap: 22px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #9ca3af;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.25s ease;
+}
+
+.nav-links a:hover {
+  color: white;
+  background: rgba(255,255,255,0.08);
+}
+
+.nav-links a.active {
+  color: white;
+  background: rgba(124,58,237,0.25);
+}
+
+
+.profile {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 120px;
+}
+
+.profile-card {
+  background: rgba(17, 24, 39, 0.9);
+  width: 380px;
+  padding: 32px;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+
+.avatar {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #22d3ee);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  color: white;
+}
+
+
+.profile-card h2 {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+
+.email {
+  font-size: 14px;
+  color: #9ca3af;
+  margin-bottom: 24px;
+}
+
+.info {
+  text-align: left;
+  margin-bottom: 28px;
+}
+
+.info div {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-size: 14px;
+}
+
+.label {
+  color: #9ca3af;
+}
+
+
+.edit-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(124,58,237,0.4);
+}
+
+.edit-btn:active {
+  transform: scale(0.96);
+}
+
+
