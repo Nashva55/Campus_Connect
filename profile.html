@@ -1,58 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile | CampusConnect</title>
-
-  <link rel="stylesheet" href="profile.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | CampusConnect</title>
+    <link rel="stylesheet" href="profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="common.css">
 </head>
 <body>
 
-  
-  <header class="topbar">
-    <div class="logo">CampusConnect</div>
+    <header class="topbar">
+        <div class="logo">CampusConnect</div>
+        <nav class="nav-links">
+            <a href="#" class="active">Profile</a>
+            <a href="feed.html">Feed</a>
+            <a href="message.html">Messages</a>
+            <a href="notification.html">Notifications</a>
+            <a href="event.html">Events</a>
+            <a href="more.html">More</a>
+        </nav>
+    </header>
 
-    <nav class="nav-links">
-      <a href="profile.html" class="active">Profile</a>
-      <a href="feed.html">Feed</a>
-      <a href="message.html">Messages</a>
-      <a href="notification.html">Notifications</a>
-      <a href="event.html">Events</a>
-      <a href=more.html>More</a>
-    </nav>
-  </header>
+    <main class="profile-container">
+        <section class="profile-header">
+            <div class="header-left">
+                <div class="profile-photo" id="profile-pic-display">
+                    <span>👤</span>
+                    <div class="photo-edit-overlay">Change</div>
+                </div>
+            </div>
 
- 
-  <main class="profile">
-    <div class="profile-card">
+            <div class="header-right">
+                <div class="identity-row">
+                    <button class="edit-profile-btn" onclick="openModal()">Edit Profile ✏️</button>
+                    <h1 id="display-name">STUDENT NAME</h1>
+                </div>
+                
+                <div class="details-stack">
+                    <div class="detail-item">
+                        <span id="display-college">University of Technology</span>
+                        <label>College</label>
+                    </div>
+                    <div class="detail-item">
+                        <span id="display-year">3rd Year</span>
+                        <label>Year</label>
+                    </div>
+                    <div class="detail-item">
+                        <span id="display-email">student@college.edu</span>
+                        <label>Email</label>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-      <div class="avatar">👤</div>
+        <div class="content-grid">
+            <aside class="sidebar-info">
+                <div class="sidebar-header">
+                    <h3>CREDENTIALS</h3>
+                    <hr style="margin: 18px 0; opacity: 0.2;">
 
-      <h2>Student Name</h2>
-      <p class="email">student@college.edu</p>
+                    <button class="btn-text">Edit</button>
+                </div>
+                
+                <div class="info-block">
+                    <h4>SKILLS</h4>
+                    <ul id="skills-list">
+                        <li>• Web Development</li>
+                        <li>• UI/UX Design</li>
+                    </ul>
+                </div>
 
-      <div class="info">
-        <div>
-          <span class="label">Department</span>
-          <span>CSE</span>
+                <div class="info-block">
+                    <h4>PROJECTS</h4>
+                    <ul id="projects-list">
+                        <li>• CampusConnect App</li>
+                        <li>• Portfolio Website</li>
+                    </ul>
+                </div>
+
+                <div class="info-block">
+                    <h4>CERTIFICATION</h4>
+                    <p>— Google Cloud Digital Leader</p>
+                    <p>— Meta Front-End Dev</p>
+                </div>
+            </aside>
+
+            <section class="posts-section">
+                <div class="posts-header">
+                  
+                    <button class="add-post-btn" title="Add Post">+</button>
+                </div>
+                
+                <div class="posts-scroll-container" id="posts-container">
+                  <div class="post-meta">2 hrs ago</div>
+                  <p>Post content goes here...</p>
+                    <div class="post-card">Post Content 1</div>
+                    <div class="post-card">Post Content 2</div>
+                    <div class="post-card">Post Content 3</div>
+                </div>
+            </section>
         </div>
-        <div>
-          <span class="label">Year</span>
-          <span>3rd Year</span>
-        </div>
-        <div>
-          <span class="label">Skills</span>
-          <span>Web Development, AI</span>
-        </div>
-      </div>
+    </main>
 
-      <button class="edit-btn">Edit Profile</button>
-
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Update Profile</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="editForm">
+                <div class="form-group">
+                    <label>Profile Image URL</label>
+                    <input type="text" id="edit-pic-url" placeholder="https://image-link.com">
+                </div>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="form-group">
+                    <label>College</label>
+                    <input type="text" id="edit-college" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="text" id="edit-year" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="edit-email" required>
+                    </div>
+                </div>
+                <button type="submit" class="save-btn">Save Changes</button>
+            </form>
+        </div>
     </div>
-  </main>
 
+    <script src="profile.js"></script>
 </body>
 </html>
-
