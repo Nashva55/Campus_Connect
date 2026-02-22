@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feed | CampusConnect</title>
+
+  <link rel="stylesheet" href="feed.css">
+  <link rel="stylesheet" href="common.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+
+  <header class="topbar">
+    <div class="logo">CampusConnect</div>
+
+    <nav class="nav-links">
+      <a href="profile.html">Profile</a>
+      <a href="#" class="active">Feed</a>
+      <a href="message.html">Messages</a>
+      <a href="notification.html">Notifications</a>
+      <a href="event.html">Events</a>
+      <a href="more.html">More</a>
+    </nav>
+  </header>
+
+ 
+  <main class="feed">
+    <div class="post">
+      <h3>Welcome to CampusConnect 🎓</h3>
+      <p>This is your feed. Campus updates and posts will appear here.</p>
+    </div>
+
+    <div class="post">
+      <h3>Upcoming Event 📅</h3>
+      <p>Hackathon this Friday! Register now.</p>
+    </div>
+  </main>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-header">
+    <h4 id="chatTitle">CSE Group</h4>
+    <button id="closeChat">✖</button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages">
+    <div class="message other">Hey everyone! 👋</div>
+    <div class="message me">Hi! Any updates on the project?</div>
+  </div>
+
+  <div class="chat-input">
+    <input type="text" id="chatInput" placeholder="Type a message..." />
+    <button id="sendBtn">Send</button>
+  </div>
+</div>
+<script>
+const chatPanel = document.getElementById("chatPanel");
+const closeChat = document.getElementById("closeChat");
+const sendBtn = document.getElementById("sendBtn");
+const chatInput = document.getElementById("chatInput");
+const chatMessages = document.getElementById("chatMessages");
+
+
+document.querySelector('.nav-links a[href="#"]').addEventListener('click', (e) => {
+  e.preventDefault();
+  chatPanel.classList.add("open");
+});
+
+
+closeChat.addEventListener("click", () => {
+  chatPanel.classList.remove("open");
+});
+
+
+sendBtn.addEventListener("click", () => {
+  const msg = chatInput.value.trim();
+  if(msg){
+    const div = document.createElement("div");
+    div.classList.add("message", "me");
+    div.textContent = msg;
+    chatMessages.appendChild(div);
+    chatInput.value = "";
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+});
+
+
+chatInput.addEventListener("keypress", (e) => {
+  if(e.key === "Enter") sendBtn.click();
+});
+</script>
+
+
+
+</body>
+</html>
