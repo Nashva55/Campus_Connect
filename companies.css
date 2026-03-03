@@ -1,0 +1,83 @@
+.companies-container {
+  max-width: 1000px;
+  margin: 90px auto 40px; 
+  padding: 0 20px;
+}
+
+.companies-container h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.filters select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  background: rgba(17,24,39,0.9);
+  color: #fff;
+}
+
+.company-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.company-card {
+  display: flex;
+  flex-direction: column;
+  background: rgba(17,24,39,0.9);
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  text-decoration: none;
+  color: #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.company-card:hover {
+  background: rgba(124,58,237,0.1);
+  transform: translateY(-2px);
+}
+
+.company-card h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.company-card p {
+  font-size: 14px;
+  color: #d1d5db;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.role-tag {
+  display: inline-block;
+  background: rgba(124,58,237,0.2);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin: 2px 2px 0 0;
+}
+
+@media (max-width: 600px) {
+  .company-grid {
+    grid-template-columns: 1fr;
+  }
+  .filters {
+    flex-direction: column;
+  }
+}

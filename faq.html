@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQs | CampusConnect</title>
+
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="faq.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">CampusConnect</div>
+</header>
+
+<main class="faq-container">
+  <h2>Frequently Asked Questions</h2>
+
+ <div class="faq-item">
+  <button class="faq-question">Do I need to pay to use CampusConnect?</button>
+  <div class="faq-answer">
+    No, CampusConnect is completely free for students. You can access internships,
+    certifications, interview preparation resources, events, and FAQs without
+    paying anything. Some external platforms linked through CampusConnect may
+    offer optional paid certificates, but using CampusConnect itself is always free.
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">How often are internships and events updated?</button>
+  <div class="faq-answer">
+    Internships, hackathons, and events are updated on a regular basis. The platform
+    continuously tracks new opportunities so students don’t miss deadlines or
+    upcoming events. You are encouraged to check this section frequently for
+    the latest listings.
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">Can first-year students apply for internships?</button>
+  <div class="faq-answer">
+    Yes, first-year students can apply for many internships available on
+    CampusConnect. Several opportunities are beginner-friendly and focus on
+    learning rather than prior experience, making them ideal for early-stage
+    students.
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">What domains are available in the roadmap section?</button>
+  <div class="faq-answer">
+    The roadmap section covers a wide range of technical domains such as Web
+    Development, Mobile App Development, Data Science, Artificial Intelligence,
+    Machine Learning, Cybersecurity, Cloud Computing, and more. Each roadmap
+    provides step-by-step guidance to help students plan their learning journey.
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">Does CampusConnect provide mock interviews?</button>
+  <div class="faq-answer">
+    Yes, CampusConnect provides interview preparation resources including mock
+    interview questions, commonly asked technical and HR questions, and interview
+    tips. These resources help students gain confidence before real interviews.
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">Can I message other students on the platform?</button>
+  <div class="faq-answer">
+    Yes, the messaging feature allows students to communicate with peers. You can
+    discuss projects, share opportunities, ask questions, and collaborate with
+    students from different colleges in a professional environment.
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">How does the resume analyzer work?</button>
+  <div class="faq-answer">
+    The resume analyzer evaluates your resume’s structure, formatting, keywords,
+    and clarity. It provides suggestions to improve readability and alignment
+    with job descriptions, helping you create a stronger resume for applications.
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">Will CampusConnect help with placements?</button>
+  <div class="faq-answer">
+    CampusConnect supports placement preparation by offering company information,
+    interview resources, resume guidance, and career roadmaps. While it does not
+    guarantee placements, it equips students with the tools needed to prepare
+    effectively.
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">Can I access CampusConnect on mobile?</button>
+  <div class="faq-answer">
+    Yes, CampusConnect is fully responsive and optimized for mobile devices.
+    Students can access all features, including internships, FAQs, and messages,
+    seamlessly on phones, tablets, and desktops.
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-question">How can I stay updated with new features?</button>
+  <div class="faq-answer">
+    You can stay updated by checking the Notifications section regularly.
+    Important updates, new features, upcoming events, and opportunities are
+    shared there to keep students informed.
+  </div>
+</div>
+
+</main>
+
+<script>
+  const questions = document.querySelectorAll(".faq-question");
+
+  questions.forEach(q => {
+    q.addEventListener("click", () => {
+      q.classList.toggle("active");
+      const answer = q.nextElementSibling;
+      answer.style.maxHeight
+        ? answer.style.maxHeight = null
+        : answer.style.maxHeight = answer.scrollHeight + "px";
+    });
+  });
+</script>
+
+</body>
+</html>

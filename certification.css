@@ -26,17 +26,7 @@ body {
   color: #4f46e5;
 }
 
-.nav-links a {
-  margin-left: 18px;
-  text-decoration: none;
-  font-weight: 500;
-  color: #374151;
-}
 
-.nav-links a:hover,
-.nav-links a.active {
-  color: #4f46e5;
-}
 
 /* ---------- PAGE CONTAINER ---------- */
 

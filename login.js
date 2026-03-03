@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
   const emailInput = document.getElementById("email");
@@ -19,4 +18,3 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "feed.html";
   });
 });
-
