@@ -85,9 +85,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           ${media}
           <div class="feed-card-body">
             <div class="feed-card-head">
-              <div class="feed-avatar">${escapeHTML(getInitials(post.authorName))}</div>
+              <a class="feed-author-link" href="user-profile.html?id=${encodeURIComponent(post.userId)}">
+                <div class="feed-avatar">${escapeHTML(getInitials(post.authorName))}</div>
+              </a>
               <div class="feed-author">
-                <strong>${escapeHTML(post.authorName)}</strong>
+                <strong><a class="feed-author-link" href="user-profile.html?id=${encodeURIComponent(post.userId)}">${escapeHTML(post.authorName)}</a></strong>
                 <span class="feed-meta">${escapeHTML(post.authorEmail)} · ${formatTime(post.createdAt)}</span>
               </div>
             </div>

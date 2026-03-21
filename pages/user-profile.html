@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile | CampusConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/common/common.css">
+  <link rel="stylesheet" href="../css/pages/user-profile.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">Campus<span>Connect</span></div>
+    <nav class="nav-links">
+      <a href="profile.html">Profile</a>
+      <a href="feed.html" class="active">Feed</a>
+      <a href="message.html">Messages</a>
+      <a href="notification.html">Notifications</a>
+      <a href="event.html">Events</a>
+      <a href="more.html">More</a>
+    </nav>
+  </header>
+
+  <main class="user-profile-shell">
+    <section class="user-profile-hero" id="profileHero">
+      <div class="user-profile-avatar" id="profileAvatar">SN</div>
+      <div class="user-profile-copy">
+        <p class="user-profile-eyebrow">CampusConnect Member</p>
+        <h1 id="profileName">Loading...</h1>
+        <p id="profileEmail">Loading profile details...</p>
+      </div>
+    </section>
+
+    <section class="user-posts-section">
+      <div class="user-posts-header">
+        <h2>Posts</h2>
+        <a href="feed.html">Back to Feed</a>
+      </div>
+      <div class="user-posts" id="userPosts">
+        <div class="user-profile-empty">
+          <h3>Loading posts...</h3>
+          <p>Please wait while we load this profile.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../js/pages/user-profile.js"></script>
+</body>
+</html>
