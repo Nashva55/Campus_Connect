@@ -1,0 +1,185 @@
+:root {
+  --admin-bg: #060914;
+  --admin-card: rgba(10, 15, 30, 0.92);
+  --admin-border: rgba(132, 145, 220, 0.2);
+  --admin-text: #eef2ff;
+  --admin-muted: #98a4c7;
+  --admin-accent-start: #8b5cf6;
+  --admin-accent-end: #2563eb;
+  --admin-danger: #ff8aad;
+  --admin-success: #84f4c4;
+}
+
+.admin-page {
+  min-height: 100vh;
+  margin: 0;
+  padding: 40px 20px;
+  font-family: "Inter", sans-serif;
+  color: var(--admin-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at top left, rgba(139, 92, 246, 0.18), transparent 26%),
+    radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.14), transparent 28%),
+    linear-gradient(180deg, #050814 0%, #09101c 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(16px);
+  opacity: 0.65;
+  animation: admin-float 14s ease-in-out infinite;
+}
+
+.admin-orb-one {
+  width: 240px;
+  height: 240px;
+  top: 10%;
+  left: 8%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.25), transparent 70%);
+}
+
+.admin-orb-two {
+  width: 280px;
+  height: 280px;
+  right: 6%;
+  bottom: 8%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.2), transparent 70%);
+}
+
+.admin-shell {
+  width: 100%;
+  max-width: 560px;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-card {
+  padding: 32px;
+  border: 1px solid var(--admin-border);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(14, 20, 38, 0.96), rgba(8, 13, 25, 0.98));
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.admin-badge {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  background: rgba(139, 92, 246, 0.12);
+  color: #d9deff;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.admin-head h1 {
+  margin: 0;
+  font-family: "Sora", sans-serif;
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  letter-spacing: -0.04em;
+}
+
+.admin-head p {
+  margin: 12px 0 0;
+  color: var(--admin-muted);
+  line-height: 1.7;
+}
+
+.admin-form {
+  margin-top: 28px;
+  display: grid;
+  gap: 18px;
+}
+
+.admin-form .field-group {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-form label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #dce3ff;
+}
+
+.admin-form input {
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(160, 174, 220, 0.18);
+  background: rgba(5, 11, 22, 0.94);
+  color: var(--admin-text);
+  font-size: 0.96rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-form input:focus {
+  border-color: rgba(139, 92, 246, 0.56);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+}
+
+#createStudentButton {
+  min-height: 54px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--admin-accent-start), var(--admin-accent-end));
+  color: #fff;
+  font-size: 0.98rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 16px 28px rgba(58, 83, 235, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#createStudentButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 32px rgba(58, 83, 235, 0.28);
+}
+
+.admin-message {
+  min-height: 24px;
+  margin: 18px 0 0;
+  font-weight: 600;
+  color: var(--admin-danger);
+}
+
+.admin-message.success {
+  color: var(--admin-success);
+}
+
+@keyframes admin-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(14px, -12px, 0);
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-card {
+    padding: 24px 18px;
+  }
+
+  .admin-brand {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

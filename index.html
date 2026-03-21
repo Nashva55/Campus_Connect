@@ -4,37 +4,196 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CampusConnect</title>
-
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="common.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/common/common.css" />
+  <link rel="stylesheet" href="css/pages/home.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-
 <body>
-
-<header class="header">
-  <div class="logo">
-    <div class="logo-icon">CC</div>
-    <span class="logo-text">CampusConnect</span>
+  <div class="page-background" aria-hidden="true">
+    <div class="hero-grid"></div>
+    <div class="glow-orb glow-orb-left"></div>
+    <div class="glow-orb glow-orb-right"></div>
+    <div class="glow-orb glow-orb-bottom"></div>
   </div>
 
-  <a href="#about" class="about">About Us</a>
-</header>
+  <header class="header">
+    <div class="logo home-logo">Campus<span>Connect</span></div>
 
-<main class="hero">
-  <div class="hero-inner">
-    <p class="tagline">
-      A <span class="highlight">thriving ecosystem</span> to bring students to learn and thrive together
-    </p>
-    <a href="login.html" class="primary-btn">Get Started →</a>
-  </div>
-</main>
+    <nav class="landing-nav">
+      <a href="#features" class="about">Features</a>
+      <a href="#modules" class="about">Modules</a>
+      <a href="pages/login.html" class="secondary-btn">Login</a>
+    </nav>
+  </header>
 
-<footer class="footer">
-  <div class="container">
-    © 2026 CampusConnect. All rights reserved.
-  </div>
-</footer>
+  <main class="landing-shell">
+    <section class="hero section-block">
+      <div class="hero-copy" data-reveal>
+        <span class="eyebrow">Student Community Platform</span>
+        <h1 class="hero-title">
+          A more connected
+          <span class="gradient-text">campus experience</span>
+          in one modern dashboard.
+        </h1>
+        <p class="tagline">
+          CampusConnect brings profiles, posts, messages, internships, companies,
+          certifications, and events together in a clean platform built for students.
+        </p>
 
+        <div class="hero-actions">
+          <a href="pages/login.html" class="primary-btn">Get Started</a>
+          <a href="#features" class="ghost-btn">See Platform</a>
+        </div>
+
+        <div class="hero-metrics">
+          <article class="metric-pill glass-card" data-reveal>
+            <strong>12+</strong>
+            <span>Connected student tools</span>
+          </article>
+          <article class="metric-pill glass-card" data-reveal>
+            <strong>All-in-one</strong>
+            <span>Community and growth hub</span>
+          </article>
+          <article class="metric-pill glass-card" data-reveal>
+            <strong>Anytime</strong>
+            <span>Access from one dashboard</span>
+          </article>
+        </div>
+      </div>
+
+      <section class="scene-wrapper" aria-label="CampusConnect product preview" data-reveal>
+        <div class="scene" id="heroScene">
+          <div class="scene-layer scene-core glass-card" data-depth="22">
+            <div class="scene-header-row">
+              <span class="card-topline">Campus overview</span>
+              <span class="status-pill">Live</span>
+            </div>
+
+            <div class="card-head">
+              <div>
+                <p class="card-label">Unified dashboard</p>
+                <h2>Everything students need in one calm interface</h2>
+              </div>
+            </div>
+
+            <div class="dashboard-preview">
+              <div class="preview-panel preview-sidebar">
+                <span class="preview-dot"></span>
+                <span class="preview-line short"></span>
+                <span class="preview-line"></span>
+                <span class="preview-line active"></span>
+                <span class="preview-line"></span>
+              </div>
+              <div class="preview-panel preview-feed">
+                <div class="preview-chart">
+                  <span style="--size: 78%"></span>
+                  <span style="--size: 54%"></span>
+                  <span style="--size: 86%"></span>
+                  <span style="--size: 62%"></span>
+                </div>
+                <div class="preview-cards">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <div>
+                <small>Modules</small>
+                <strong>Profile, Feed, Messages, Events</strong>
+              </div>
+              <div>
+                <small>Growth</small>
+                <strong>Internships, companies, certifications</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="scene-layer scene-panel scene-panel-top glass-card" data-depth="14">
+            <p>Opportunities</p>
+            <strong>Internships and company filters</strong>
+            <span>Discover roles faster with organized listings.</span>
+          </div>
+
+          <div class="scene-layer scene-panel scene-panel-bottom glass-card" data-depth="18">
+            <p>Community</p>
+            <strong>Posts, replies, and campus updates</strong>
+            <span>Keep student engagement active in one place.</span>
+          </div>
+
+          <div class="scene-layer scene-chip glass-card" data-depth="10">Messages</div>
+          <div class="scene-layer scene-ring" data-depth="8"></div>
+          <div class="scene-layer scene-ring scene-ring-secondary" data-depth="4"></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="section-block info-band" id="features">
+      <div class="section-heading" data-reveal>
+        <span class="section-tag">Features</span>
+        <h2>Built like a real student product, not a collection of separate pages</h2>
+        <p>Each feature is organized around student identity, campus engagement, and career growth.</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card glass-card" data-reveal>
+          <span class="feature-icon">PR</span>
+          <h3>Profile and presence</h3>
+          <p>Edit profile details, show skills and projects, and manage a personal student identity.</p>
+        </article>
+        <article class="feature-card glass-card" data-reveal>
+          <span class="feature-icon">FD</span>
+          <h3>Feed and updates</h3>
+          <p>Share posts, follow campus activity, and keep the community informed and connected.</p>
+        </article>
+        <article class="feature-card glass-card" data-reveal>
+          <span class="feature-icon">MS</span>
+          <h3>Messages and alerts</h3>
+          <p>Stay on top of conversations, notifications, and student interactions in one flow.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-block modules-section" id="modules">
+      <div class="section-heading" data-reveal>
+        <span class="section-tag">Modules</span>
+        <h2>Everything is grouped into clear areas students can understand quickly</h2>
+      </div>
+
+      <div class="module-grid">
+        <article class="module-card glass-card" data-reveal>
+          <small>Community</small>
+          <h3>Profile, feed, messages, notifications</h3>
+          <p>Designed for everyday student interaction and sharing.</p>
+        </article>
+        <article class="module-card glass-card" data-reveal>
+          <small>Opportunities</small>
+          <h3>Internships, companies, events</h3>
+          <p>Find roles, discover organizations, and stay updated on campus activity.</p>
+        </article>
+        <article class="module-card glass-card" data-reveal>
+          <small>Learning</small>
+          <h3>Certifications, interview prep, domains</h3>
+          <p>Support career preparation with focused resources and guidance.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-block cta-section glass-card" data-reveal>
+      <div>
+        <span class="section-tag">Start now</span>
+        <h2>Step into CampusConnect with a cleaner, more connected student workflow.</h2>
+      </div>
+      <a href="pages/login.html" class="primary-btn">Open Platform</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">� 2026 CampusConnect. All rights reserved.</div>
+  </footer>
+
+  <script src="js/pages/home.js"></script>
 </body>
 </html>

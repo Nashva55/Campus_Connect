@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | CampusConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/common/common.css">
+  <link rel="stylesheet" href="../css/pages/admin.css">
+</head>
+<body class="admin-page">
+  <div class="admin-orb admin-orb-one" aria-hidden="true"></div>
+  <div class="admin-orb admin-orb-two" aria-hidden="true"></div>
+
+  <main class="admin-shell">
+    <section class="admin-card">
+      <div class="admin-brand">
+        <a href="../index.html" class="logo">Campus<span>Connect</span></a>
+        <span class="admin-badge">Admin Panel</span>
+      </div>
+
+      <header class="admin-head">
+        <h1>Create Student Account</h1>
+        <p>Admins can create student accounts here. Students can only use the login page.</p>
+      </header>
+
+      <form id="adminCreateUserForm" class="admin-form" novalidate>
+        <div class="field-group">
+          <label for="studentName">Name</label>
+          <input type="text" id="studentName" placeholder="Enter student name">
+        </div>
+
+        <div class="field-group">
+          <label for="studentEmail">Email</label>
+          <input type="email" id="studentEmail" placeholder="student@college.edu">
+        </div>
+
+        <div class="field-group">
+          <label for="studentPassword">Password</label>
+          <input type="password" id="studentPassword" placeholder="Minimum 6 characters">
+        </div>
+
+        <button type="submit" id="createStudentButton">Create Student</button>
+      </form>
+
+      <p class="admin-message" id="adminMessage" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script src="../js/pages/admin.js"></script>
+</body>
+</html>

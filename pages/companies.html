@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Companies & Roles | CampusConnect</title>
+
+  <link rel="stylesheet" href="../css/common/common.css">
+  <link rel="stylesheet" href="../css/pages/companies.css">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="logo">Campus<span>Connect</span></div>
+    <nav class="nav-links">
+      <a href="profile.html">Profile</a>
+      <a href="feed.html">Feed</a>
+      <a href="message.html">Messages</a>
+      <a href="notification.html">Notifications</a>
+      <a href="event.html">Events</a>
+      <a href="more.html">More</a>
+    </nav>
+  </header>
+
+  <main class="companies-container">
+    <h2>Companies & Roles</h2>
+
+    <!-- Filters -->
+    <div class="filters">
+      <select id="filter-company">
+        <option value="all">All Companies</option>
+        <option value="google">Google</option>
+        <option value="amazon">Amazon</option>
+        <option value="microsoft">Microsoft</option>
+        <option value="startup">Startup</option>
+        <option value="nontech">Non-Tech</option>
+      </select>
+
+      <select id="filter-role">
+        <option value="all">All Roles</option>
+        <option value="software">Software Development</option>
+        <option value="data">Data & Analytics</option>
+        <option value="design">Design & UX</option>
+        <option value="management">Management & Marketing</option>
+      </select>
+
+      <select id="filter-location">
+        <option value="all">All Locations</option>
+        <option value="remote">Remote</option>
+        <option value="onsite">On-site</option>
+        <option value="newyork">New York</option>
+        <option value="sanfran">San Francisco</option>
+      </select>
+    </div>
+
+    <!-- Company Cards -->
+    <div class="company-grid" id="companyGrid">
+      <!-- Google Example -->
+      <a href="#" class="company-card" data-company="google" data-role="software" data-location="onsite">
+        <h3>Google</h3>
+        <p>Leading tech company focused on search, AI, and cloud computing.</p>
+        <div>
+          <span class="role-tag">Frontend Developer</span>
+          <span class="role-tag">Backend Developer</span>
+          <span class="role-tag">Data Scientist</span>
+        </div>
+      </a>
+
+      <!-- Amazon Example -->
+      <a href="#" class="company-card" data-company="amazon" data-role="data" data-location="onsite">
+        <h3>Amazon</h3>
+        <p>E-commerce and cloud giant offering diverse tech and analytics roles.</p>
+        <div>
+          <span class="role-tag">Data Analyst</span>
+          <span class="role-tag">Machine Learning Engineer</span>
+        </div>
+      </a>
+
+      <!-- Microsoft Example -->
+      <a href="#" class="company-card" data-company="microsoft" data-role="management" data-location="remote">
+        <h3>Microsoft</h3>
+        <p>Software and cloud services leader with roles in tech and product management.</p>
+        <div>
+          <span class="role-tag">Product Manager</span>
+          <span class="role-tag">UX Designer</span>
+        </div>
+      </a>
+
+      <!-- Startup Example -->
+      <a href="#" class="company-card" data-company="startup" data-role="design" data-location="onsite">
+        <h3>InnovateX Startup</h3>
+        <p>A fast-growing startup focusing on AI-powered solutions.</p>
+        <div>
+          <span class="role-tag">UI/UX Designer</span>
+          <span class="role-tag">Frontend Developer</span>
+        </div>
+      </a>
+
+      <!-- Non-Tech Example -->
+      <a href="#" class="company-card" data-company="nontech" data-role="management" data-location="onsite">
+        <h3>Global Consulting</h3>
+        <p>Non-tech consulting firm offering internships and full-time roles.</p>
+        <div>
+          <span class="role-tag">Business Analyst</span>
+          <span class="role-tag">Operations Intern</span>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <script src="../js/pages/companies.js"></script>
+</body>
+</html>
+
+

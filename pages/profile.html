@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | CampusConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/pages/profile.css">
+  <link rel="stylesheet" href="../css/common/common.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="topbar">
+    <div class="logo">Campus<span>Connect</span></div>
+    <nav class="nav-links">
+      <a href="#" class="active">Profile</a>
+      <a href="feed.html">Feed</a>
+      <a href="message.html">Messages</a>
+      <a href="notification.html">Notifications</a>
+      <a href="event.html">Events</a>
+      <a href="more.html">More</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- COVER BANNER -->
+    <section class="cover-banner">
+      <div class="cover-gradient"></div>
+      <div class="cover-grid-lines"></div>
+
+      <div class="cover-content">
+        <div class="identity-strip">
+          <div class="avatar-wrap">
+            <div class="avatar-ring">
+              <div class="profile-photo" id="profile-pic-display">
+                <span class="avatar-icon">SN</span>
+                <div class="photo-overlay" onclick="openModal()">Change</div>
+              </div>
+            </div>
+            <div class="online-dot"></div>
+          </div>
+          <div class="identity-info">
+              <div class="name-row">
+                <h1 id="display-name">Student Name</h1>
+                <button class="edit-btn" onclick="openModal()">Edit Profile</button>
+              </div>
+              <div class="meta-pills">
+                <span class="meta-pill" id="display-college">College: University of Technology</span>
+                <span class="meta-pill" id="display-year">Year: 3rd Year</span>
+                <span class="meta-pill" id="display-email">Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="84f7f0f1e0e1eaf0c4e7ebe8e8e1e3e1aae1e0f1">[email&#160;protected]</a></span>
+              </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- BODY GRID -->
+    <div class="body-grid">
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-section-header">
+            <span class="section-label">CREDENTIALS</span>
+            <button class="link-btn" onclick="openCredentialsModal()">Edit</button>
+          </div>
+
+          <div class="cred-block">
+            <p class="cred-title">SKILLS</p>
+            <ul id="skills-list">
+              <li>Web Development</li>
+              <li>UI/UX Design</li>
+            </ul>
+          </div>
+
+          <div class="cred-block">
+            <p class="cred-title">PROJECTS</p>
+            <ul id="projects-list">
+              <li>CampusConnect App</li>
+              <li>Portfolio Website</li>
+            </ul>
+          </div>
+
+          <div class="cred-block">
+            <p class="cred-title">CERTIFICATIONS</p>
+            <div id="certifications-block">
+              <p>Google Cloud Digital Leader</p>
+              <p>Meta Front-End Developer</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- POSTS COLUMN -->
+      <section class="posts-column">
+        <div class="posts-top-bar">
+          <span class="posts-label">POSTS</span>
+          <button class="add-post-btn" onclick="openPostModal()">+ New Post</button>
+        </div>
+        <div class="posts-feed" id="posts-container">
+          <div class="empty-state">
+            <div class="empty-icon">No Posts</div>
+            <p>No posts yet</p>
+            <span>Click <strong>+ New Post</strong> to share something with your campus</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ===== EDIT PROFILE MODAL ===== -->
+  <div id="editModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>Edit Profile</h2>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="editForm">
+        <!-- PHOTO PICKER -->
+        <div class="photo-picker">
+          <div class="photo-picker-preview" id="pickerPreview">
+            <span id="pickerIcon">SN</span>
+          </div>
+          <div class="photo-picker-options">
+            <label class="photo-option-btn" for="profilePhotoInput">
+              Choose from Files
+            </label>
+            <label class="photo-option-btn" for="profileCameraInput">
+              Take Photo
+            </label>
+            <button type="button" class="photo-option-btn remove-btn" id="removePhotoBtn" onclick="removeProfilePhoto()" style="display:none;">
+              Remove Current Photo
+            </button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="edit-name" required>
+        </div>
+        <div class="field">
+          <label>College</label>
+          <input type="text" id="edit-college" required>
+        </div>
+        <div class="field-row">
+          <div class="form-group field">
+            <label>Year</label>
+            <input type="text" id="edit-year" required>
+          </div>
+          <div class="form-group field">
+            <label>Email</label>
+            <input type="email" id="edit-email" required>
+          </div>
+        </div>
+        <button type="submit" class="modal-save-btn">Save Profile</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- hidden file inputs OUTSIDE any form so browser doesn't block .click() -->
+  <input type="file" id="profilePhotoInput"  accept="image/*"            style="display:none;" onchange="handleProfilePhotoSelect(event)">
+  <input type="file" id="profileCameraInput" accept="image/*" capture="user" style="display:none;" onchange="handleProfilePhotoSelect(event)">
+
+  <!-- ===== EDIT CREDENTIALS MODAL ===== -->
+  <div id="credentialsModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>Edit Credentials</h2>
+        <button class="modal-close" onclick="closeCredentialsModal()">&times;</button>
+      </div>
+      <form id="credentialsForm">
+        <div class="field">
+          <label>Skills <span class="hint">comma separated</span></label>
+          <input type="text" id="edit-skills" placeholder="Python, React, Figma…">
+        </div>
+        <div class="field">
+          <label>Projects <span class="hint">comma separated</span></label>
+          <input type="text" id="edit-projects" placeholder="CampusConnect, Portfolio…">
+        </div>
+        <div class="field">
+          <label>Certifications <span class="hint">comma separated</span></label>
+          <input type="text" id="edit-certifications" placeholder="Google Cloud, AWS…">
+        </div>
+        <button type="submit" class="modal-save-btn">Save Credentials</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== CREATE POST MODAL ===== -->
+  <div id="postModal" class="modal-overlay">
+    <div class="modal-box wide-modal">
+      <div class="modal-head">
+        <h2>New Post</h2>
+        <button class="modal-close" onclick="closePostModal()">&times;</button>
+      </div>
+      <div class="upload-zone" id="uploadArea" onclick="triggerFileInput()">
+        <div id="uploadPlaceholder" class="upload-placeholder">
+          <div class="upload-icon-wrap">Upload</div>
+          <p>Click to upload photo or video</p>
+          <span>JPG · PNG · GIF · MP4 · WEBM</span>
+        </div>
+        <div id="mediaPreviewWrap" style="display:none;" class="media-preview-wrap">
+          <img id="imagePreview" style="display:none;" alt="preview">
+          <video id="videoPreview" style="display:none;" controls></video>
+          <button class="remove-media" onclick="removeMedia(event)">Remove</button>
+        </div>
+      </div>
+      <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none;" onchange="handleMediaSelect(event)">
+      <div class="field" style="margin-top:16px;">
+        <label>Caption</label>
+        <textarea id="post-caption" placeholder="What's on your mind?" rows="3"></textarea>
+      </div>
+      <button class="modal-save-btn" onclick="submitPost()">Share Post</button>
+    </div>
+  </div>
+
+  <!-- ===== POST VIEWER MODAL ===== -->
+  <div id="postViewerModal" class="modal-overlay" onclick="handleViewerBackdrop(event)">
+    <div class="modal-box viewer-box">
+      <div class="viewer-media-panel" id="viewerMedia"></div>
+      <div class="viewer-side">
+        <div class="viewer-head">
+          <div class="viewer-author" id="viewerAuthor"></div>
+          <button class="modal-close" onclick="closePostViewer()">&times;</button>
+        </div>
+        <p class="viewer-caption" id="viewerCaption"></p>
+        <span class="viewer-time" id="viewerTime"></span>
+
+        <div class="viewer-actions">
+          <button class="vaction-btn" id="viewerLikeBtn" onclick="viewerToggleLike()">Like <span id="viewerLikeCount">0</span></button>
+          <button class="vaction-btn" onclick="sharePost()">Share</button>
+        </div>
+
+        <div class="comments-area">
+          <p class="comments-heading">COMMENTS</p>
+          <div class="comments-list" id="commentsList">
+            <p class="no-comment">No comments yet — be first!</p>
+          </div>
+        </div>
+
+        <div class="comment-bar">
+          <input type="text" id="commentInput" placeholder="Add a comment…" onkeydown="handleCommentKey(event)">
+          <button class="comment-post-btn" onclick="submitComment()">Post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+   <div id="shareToast" class="toast"></div>
+
+  <script src="../js/pages/profile.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
