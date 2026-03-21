@@ -50,6 +50,10 @@ body {
   text-transform: uppercase;
 }
 
+.user-profile-copy {
+  flex: 1;
+}
+
 .user-profile-copy h1 {
   margin: 0;
   font-family: "Sora", sans-serif;
@@ -57,9 +61,45 @@ body {
   letter-spacing: -0.05em;
 }
 
-.user-profile-copy p:last-child {
+.user-profile-copy p:last-of-type {
   margin: 12px 0 0;
   color: #a8b4d4;
+}
+
+.user-profile-stats {
+  margin-top: 14px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.user-profile-stat {
+  color: #b4c0df;
+  font-size: 0.92rem;
+}
+
+.user-profile-stat strong {
+  color: #ffffff;
+  margin-right: 4px;
+}
+
+.user-profile-follow-btn {
+  min-width: 120px;
+  min-height: 46px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #8b5cf6, #2563eb);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.24);
+}
+
+.user-profile-follow-btn.is-following {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(148, 163, 255, 0.2);
+  box-shadow: none;
 }
 
 .user-posts-section {
@@ -153,6 +193,10 @@ body {
   .user-profile-hero {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .user-profile-follow-btn {
+    width: 100%;
   }
 
   .user-posts-header {

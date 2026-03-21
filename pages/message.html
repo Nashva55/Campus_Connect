@@ -4,16 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Messages | CampusConnect</title>
-
-  
   <link rel="stylesheet" href="../css/common/common.css">
-  
   <link rel="stylesheet" href="../css/pages/message.css">
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
- 
   <header class="topbar">
     <div class="logo">Campus<span>Connect</span></div>
     <nav class="nav-links">
@@ -26,40 +21,105 @@
     </nav>
   </header>
 
-  
-  <main class="chat-container">
- 
-    <aside class="chat-sidebar">
-      <h3>Chats</h3>
+  <main class="messages-shell">
+    <section class="messages-app surface-card">
+      <aside class="messages-sidebar">
+        <div class="sidebar-topbar">
+          <div>
+            <span class="eyebrow">Messages</span>
+            <h1>Chats</h1>
+          </div>
+          <div class="sidebar-topbar-actions">
+            <button class="icon-btn" id="refreshChatsBtn" title="Refresh">R</button>
+            <button class="icon-btn icon-btn-accent" id="openGroupModalBtn" title="Create Group">+</button>
+          </div>
+        </div>
 
-      <div class="chat-item active">?? CSE Group</div>
-      <div class="chat-item">?? Rahul</div>
-      <div class="chat-item">?? Ananya</div>
-      <div class="chat-item">?? Hackathon Team</div>
-    </aside>
+        <div class="sidebar-block">
+          <div class="block-head">
+            <h2>Conversations</h2>
+            <span class="count-chip" id="conversationCount">0</span>
+          </div>
+          <div class="search-wrap compact-search">
+            <input type="text" id="conversationSearch" placeholder="Search conversations">
+          </div>
+          <div class="conversation-list" id="conversationList">
+            <div class="sidebar-empty">No conversations yet.</div>
+          </div>
+        </div>
 
+        <div class="sidebar-block sidebar-block-people">
+          <div class="block-head">
+            <h2>Find Friends</h2>
+          </div>
+          <div class="search-wrap compact-search">
+            <input type="text" id="userSearch" placeholder="Search students">
+          </div>
+          <div class="user-list" id="userList">
+            <div class="sidebar-empty">No users available.</div>
+          </div>
+        </div>
+      </aside>
 
-    <section class="chat-window">
-      <div class="chat-header">
-        <h4>CSE Group</h4>
-        <span>Group Chat</span>
-      </div>
+      <section class="chat-panel">
+        <div class="chat-panel-empty" id="chatPanelEmpty">
+          <div class="chat-empty-visual">
+            <div class="chat-empty-badge">DM</div>
+          </div>
+          <h2>Your messages</h2>
+          <p>Select a person from the left to start chatting. Only the active thread will scroll, similar to modern messaging apps.</p>
+        </div>
 
-      <div class="chat-messages">
-        <div class="message other">Hey everyone! ??</div>
-        <div class="message me">Hi! Any updates on the project?</div>
-        <div class="message other">Let’s meet tomorrow.</div>
-      </div>
+        <div class="chat-panel-active" id="chatPanelActive" style="display:none;">
+          <header class="chat-header" id="chatHeader">
+            <div class="chat-header-main">
+              <div class="chat-avatar" id="activeChatAvatar">CC</div>
+              <div class="chat-identity">
+                <h2 id="activeChatName">Conversation</h2>
+                <p id="activeChatSubtitle">Conversation details</p>
+              </div>
+            </div>
+            <div class="chat-header-meta" id="activeChatMeta"></div>
+          </header>
 
-      <div class="chat-input">
-        <input type="text" placeholder="Type a message..." />
-        <button>Send</button>
-      </div>
+          <div class="message-stream-wrap">
+            <div class="message-stream" id="messageStream">
+              <div class="stream-empty">No messages yet. Start the conversation.</div>
+            </div>
+          </div>
+
+          <form class="composer-bar" id="messageForm">
+            <div class="composer-input-wrap">
+              <input type="text" id="messageInput" placeholder="Message">
+            </div>
+            <button type="submit" class="send-btn">Send</button>
+          </form>
+        </div>
+      </section>
     </section>
   </main>
 
+  <div class="modal-overlay" id="groupModal">
+    <div class="modal-box group-modal-box">
+      <div class="modal-head">
+        <h2>Create Group Chat</h2>
+        <button class="modal-close" id="closeGroupModalBtn">&times;</button>
+      </div>
+      <form id="groupForm">
+        <div class="field">
+          <label>Group Name</label>
+          <input type="text" id="groupName" placeholder="Placement Prep Team" required>
+        </div>
+        <div class="field">
+          <label>Select Members</label>
+          <div class="member-picker" id="groupMemberList"></div>
+        </div>
+        <button type="submit" class="primary-btn modal-submit">Create Group</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+  <script src="../js/pages/message.js"></script>
 </body>
 </html>
-
-
-

@@ -56,6 +56,19 @@ function createAvatarMarkup(name, className = "post-card-avatar") {
   return `<div class="${className}">${escapeHTML(getInitials(name))}</div>`;
 }
 
+function syncFollowStats(user = storedUser) {
+  const followers = document.getElementById("display-followers");
+  const following = document.getElementById("display-following");
+
+  if (followers) {
+    followers.textContent = `Followers: ${user.followersCount || 0}`;
+  }
+
+  if (following) {
+    following.textContent = `Following: ${user.followingCount || 0}`;
+  }
+}
+
 function syncProfileFromStorage() {
   const displayName = document.getElementById("display-name");
   const displayEmail = document.getElementById("display-email");
@@ -75,6 +88,23 @@ function syncProfileFromStorage() {
 
   if (pickerPreview && !pickerPreview.querySelector("img")) {
     pickerPreview.innerHTML = `<span id="pickerIcon">${getInitials(storedUser.name)}</span>`;
+  }
+
+  syncFollowStats(storedUser);
+}
+
+async function loadOwnProfileStats() {
+  try {
+    const data = await apiRequest(`/users/${storedUser.id}/profile`, {
+      method: "GET"
+    });
+
+    storedUser.followersCount = data.user.followersCount || 0;
+    storedUser.followingCount = data.user.followingCount || 0;
+    localStorage.setItem("campusconnectUser", JSON.stringify(storedUser));
+    syncFollowStats(storedUser);
+  } catch (error) {
+    syncFollowStats(storedUser);
   }
 }
 
@@ -584,4 +614,5 @@ function escapeHTML(str) {
 }
 
 syncProfileFromStorage();
+loadOwnProfileStats();
 loadPosts();

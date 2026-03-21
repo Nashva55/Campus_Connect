@@ -7,7 +7,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const profileAvatar = document.getElementById("profileAvatar");
   const profileName = document.getElementById("profileName");
   const profileEmail = document.getElementById("profileEmail");
+  const followersCount = document.getElementById("followersCount");
+  const followingCount = document.getElementById("followingCount");
   const userPosts = document.getElementById("userPosts");
+  const followButton = document.getElementById("followButton");
 
   if (!token || !storedUser) {
     window.location.href = "login.html";
@@ -51,6 +54,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     return parsedDate.toLocaleDateString();
   }
 
+  function renderFollowState(user) {
+    followersCount.textContent = user.followersCount || 0;
+    followingCount.textContent = user.followingCount || 0;
+    followButton.textContent = user.isFollowing ? "Following" : "Follow";
+    followButton.classList.toggle("is-following", Boolean(user.isFollowing));
+  }
+
   function renderPosts(posts) {
     if (!posts.length) {
       userPosts.innerHTML = `
@@ -86,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }).join("");
   }
 
-  try {
+  async function loadProfile() {
     const response = await fetch(`http://localhost:5000/api/users/${userId}/profile`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -102,12 +112,44 @@ document.addEventListener("DOMContentLoaded", async () => {
     profileAvatar.textContent = getInitials(data.user.name);
     profileName.textContent = data.user.name;
     profileEmail.textContent = data.user.email;
+    renderFollowState(data.user);
     renderPosts(data.posts);
+  }
+
+  followButton.addEventListener("click", async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/${userId}/follow`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Unable to update follow status.");
+      }
+
+      renderFollowState(data.user);
+      localStorage.setItem("campusconnectUser", JSON.stringify({
+        ...storedUser,
+        followersCount: data.currentUser.followersCount,
+        followingCount: data.currentUser.followingCount
+      }));
+    } catch (error) {
+      alert(error.message || "Unable to update follow status.");
+    }
+  });
+
+  try {
+    await loadProfile();
   } catch (error) {
     userPosts.innerHTML = `
       <div class="user-profile-empty">
         <h3>Unable to load profile</h3>
         <p>${escapeHTML(error.message)}</p>
       </div>`;
+      followButton.style.display = "none";
   }
 });
