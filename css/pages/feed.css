@@ -1,190 +1,280 @@
-/* ================================================
-   feed.css
-   NOTE: No * reset here — common.css handles it.
-   ================================================ */
-
 body {
-  background: radial-gradient(circle at top left, #1a0b2e, #050b12);
-  color: #e5e7eb;
   min-height: 100vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  font-family: 'DM Sans', sans-serif;
+  margin: 0;
+  color: #e5e7eb;
+  background:
+    radial-gradient(circle at top left, rgba(90, 36, 160, 0.35), transparent 22%),
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 26%),
+    linear-gradient(180deg, #090c17 0%, #0b1020 100%);
+  font-family: "Inter", sans-serif;
 }
 
-/* ── FEED LAYOUT ────────────────────────────── */
-.feed {
+.feed-shell {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: 108px 20px 56px;
+}
+
+.feed-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px;
+  border-radius: 24px;
+  border: 1px solid rgba(148, 163, 255, 0.14);
+  background: linear-gradient(180deg, rgba(16, 23, 40, 0.9), rgba(10, 15, 28, 0.96));
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28);
+}
+
+.feed-eyebrow {
+  margin: 0 0 8px;
+  color: #9aa7cb;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.feed-hero h1 {
+  margin: 0;
+  font-family: "Sora", sans-serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  letter-spacing: -0.05em;
+}
+
+.feed-hero p:last-child {
+  margin: 12px 0 0;
+  max-width: 640px;
+  color: #a8b4d4;
+  line-height: 1.7;
+}
+
+.feed-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #8b5cf6, #2563eb);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.24);
+}
+
+.feed-stream {
+  margin-top: 24px;
+  display: grid;
+  gap: 18px;
+}
+
+.feed-card,
+.feed-empty {
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 255, 0.12);
+  background: rgba(13, 18, 32, 0.94);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.24);
+}
+
+.feed-empty {
+  padding: 30px;
+  text-align: center;
+}
+
+.feed-empty h3 {
+  margin: 0 0 8px;
+  font-family: "Sora", sans-serif;
+}
+
+.feed-empty p {
+  margin: 0;
+  color: #9aa7cb;
+}
+
+.feed-card-media {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  display: block;
+  border-radius: 20px 20px 0 0;
+}
+
+.feed-card-body {
+  padding: 20px 22px;
+}
+
+.feed-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.feed-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.22), rgba(37, 99, 235, 0.22));
+  color: #eef2ff;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(148, 163, 255, 0.18);
+}
+
+.feed-author {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-top: 90px;
-  padding-bottom: 60px;
-  gap: 20px;
+  gap: 4px;
 }
 
-/* ── POST CARD ──────────────────────────────── */
-.post {
-  background: rgba(17, 24, 39, 0.9);
-  width: 80%;
-  max-width: 600px;
-  padding: 20px 24px;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: border-color 0.2s, box-shadow 0.2s;
+.feed-author strong {
+  font-size: 1rem;
 }
 
-.post:hover {
-  border-color: rgba(124, 92, 252, 0.25);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+.feed-meta {
+  color: #92a0c3;
+  font-size: 0.86rem;
 }
 
-.post h3 {
-  margin-bottom: 8px;
-  font-size: 17px;
-  font-family: 'Sora', sans-serif;
+.feed-caption {
+  margin: 16px 0 0;
+  color: #d7deef;
+  line-height: 1.7;
+}
+
+.feed-stats {
+  margin-top: 16px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: #97a3c5;
+  font-size: 0.9rem;
+}
+
+.feed-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.feed-button {
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 255, 0.16);
+  background: rgba(255, 255, 255, 0.03);
+  color: #dce4ff;
   font-weight: 600;
-  color: #f0f0f5;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
-.post p {
-  font-size: 14px;
-  color: #d1d5db;
+.feed-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.feed-button.is-liked {
+  border-color: rgba(139, 92, 246, 0.4);
+  background: rgba(139, 92, 246, 0.14);
+  color: #f2eaff;
+}
+
+.feed-comments {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(148, 163, 255, 0.1);
+  display: grid;
+  gap: 12px;
+}
+
+.feed-comment-list {
+  display: grid;
+  gap: 10px;
+}
+
+.feed-comment {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(148, 163, 255, 0.08);
+}
+
+.feed-comment strong {
+  font-size: 0.9rem;
+}
+
+.feed-comment p {
+  margin: 0;
+  color: #d2daf0;
   line-height: 1.6;
 }
 
-/* ── CHAT PANEL ─────────────────────────────── */
-.chat-panel {
-  position: fixed;
-  top: 60px;
-  right: -400px;
-  width: 360px;
-  height: calc(100% - 60px);
-  background: #0e1018;
-  border-left: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.5);
+.feed-comment span {
+  color: #8f9dbe;
+  font-size: 0.8rem;
+}
+
+.feed-comment-form {
   display: flex;
-  flex-direction: column;
-  transition: right 0.3s ease;
-  z-index: 500;
-  color: #e5e7eb;
+  gap: 10px;
 }
 
-.chat-panel.open {
-  right: 0;
-}
-
-.chat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.chat-header h4 {
-  font-size: 15px;
-  font-family: 'Sora', sans-serif;
-  font-weight: 600;
-}
-
-.chat-header button {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 15px;
-  cursor: pointer;
-  transition: color 0.2s;
-  padding: 4px 6px;
-  border-radius: 6px;
-}
-
-.chat-header button:hover {
-  color: white;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.chat-messages {
+.feed-comment-input {
   flex: 1;
-  padding: 16px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* scrollbar inside chat */
-.chat-messages::-webkit-scrollbar { width: 4px; }
-.chat-messages::-webkit-scrollbar-thumb { background: rgba(124,92,252,0.3); border-radius: 99px; }
-
-.message {
-  max-width: 72%;
-  padding: 10px 14px;
-  border-radius: 14px;
-  word-wrap: break-word;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.message.me {
-  background: linear-gradient(135deg, #7c3aed, #5b21b6);
-  margin-left: auto;
-  color: white;
-  border-bottom-right-radius: 4px;
-}
-
-.message.other {
-  background: rgba(255, 255, 255, 0.08);
-  color: #e5e7eb;
-  border-bottom-left-radius: 4px;
-}
-
-.chat-input {
-  display: flex;
-  gap: 8px;
-  padding: 12px 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.chat-input input {
-  flex: 1;
-  padding: 9px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 46px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 255, 0.14);
+  background: rgba(6, 10, 20, 0.8);
+  color: #eef2ff;
   outline: none;
-  background: rgba(255, 255, 255, 0.06);
-  color: white;
-  font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
-  transition: border-color 0.2s;
 }
 
-.chat-input input:focus {
-  border-color: rgba(124, 92, 252, 0.5);
-  background: rgba(124, 92, 252, 0.06);
+.feed-comment-input:focus {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
 }
 
-.chat-input input::placeholder {
-  color: rgba(255, 255, 255, 0.28);
-}
-
-.chat-input button {
-  padding: 9px 16px;
-  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+.feed-comment-submit {
+  min-width: 90px;
+  min-height: 46px;
   border: none;
-  border-radius: 10px;
-  color: white;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #8b5cf6, #2563eb);
+  color: #fff;
+  font-weight: 700;
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: 'DM Sans', sans-serif;
-  transition: opacity 0.2s, transform 0.15s;
-  white-space: nowrap;
 }
 
-.chat-input button:hover {
-  opacity: 0.88;
-  transform: translateY(-1px);
+@media (max-width: 720px) {
+  .feed-shell {
+    padding-inline: 16px;
+  }
+
+  .feed-hero {
+    padding: 22px 18px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .feed-action {
+    width: 100%;
+  }
+
+  .feed-comment-form {
+    flex-direction: column;
+  }
+
+  .feed-comment-submit {
+    width: 100%;
+  }
 }

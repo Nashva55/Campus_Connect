@@ -1,144 +1,209 @@
+const API_BASE_URL = "http://localhost:5000/api";
+const token = localStorage.getItem("campusconnectToken");
+const storedUser = JSON.parse(localStorage.getItem("campusconnectUser") || "null");
 
+if (!token || !storedUser) {
+  window.location.href = "login.html";
+}
 
-const editModal        = document.getElementById("editModal");
-const editForm         = document.getElementById("editForm");
+const editModal = document.getElementById("editModal");
+const editForm = document.getElementById("editForm");
 const credentialsModal = document.getElementById("credentialsModal");
-const credentialsForm  = document.getElementById("credentialsForm");
-const postModal        = document.getElementById("postModal");
-const postViewerModal  = document.getElementById("postViewerModal");
+const credentialsForm = document.getElementById("credentialsForm");
+const postModal = document.getElementById("postModal");
+const postViewerModal = document.getElementById("postViewerModal");
 
-let posts               = [];
+let posts = [];
 let currentMediaDataURL = null;
-let currentMediaType    = null;
-let activePostId        = null;
+let currentMediaType = null;
+let activePostId = null;
 
-/* -- PROFILE EDIT ---------------------------- */
+function getAuthHeaders() {
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`
+  };
+}
+
+async function apiRequest(path, options = {}) {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    headers: {
+      ...(options.headers || {}),
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Request failed.");
+  }
+
+  return data;
+}
+
+function getInitials(name) {
+  return String(name || "SN")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join("") || "SN";
+}
+
+function createAvatarMarkup(name, className = "post-card-avatar") {
+  return `<div class="${className}">${escapeHTML(getInitials(name))}</div>`;
+}
+
+function syncProfileFromStorage() {
+  const displayName = document.getElementById("display-name");
+  const displayEmail = document.getElementById("display-email");
+  const editName = document.getElementById("edit-name");
+  const editEmail = document.getElementById("edit-email");
+  const avatarIcon = document.querySelector(".avatar-icon");
+  const pickerPreview = document.getElementById("pickerPreview");
+
+  displayName.innerText = storedUser.name || "Student Name";
+  displayEmail.innerText = `Email: ${storedUser.email || "student@college.edu"}`;
+  editName.value = storedUser.name || "";
+  editEmail.value = storedUser.email || "";
+
+  if (avatarIcon) {
+    avatarIcon.textContent = getInitials(storedUser.name);
+  }
+
+  if (pickerPreview && !pickerPreview.querySelector("img")) {
+    pickerPreview.innerHTML = `<span id="pickerIcon">${getInitials(storedUser.name)}</span>`;
+  }
+}
 
 function openModal() {
   editModal.style.display = "flex";
-  document.getElementById("edit-name").value    = document.getElementById("display-name").innerText;
-  document.getElementById("edit-college").value = document.getElementById("display-college").innerText.replace(/^College: /, "").replace(/^Year: /, "").replace(/^Email: /, "");
-  document.getElementById("edit-year").value    = document.getElementById("display-year").innerText.replace(/^College: /, "").replace(/^Year: /, "").replace(/^Email: /, "");
-  document.getElementById("edit-email").value   = document.getElementById("display-email").innerText.replace(/^College: /, "").replace(/^Year: /, "").replace(/^Email: /, "");
+  document.getElementById("edit-name").value = document.getElementById("display-name").innerText;
+  document.getElementById("edit-college").value = document.getElementById("display-college").innerText.replace(/^College: /, "");
+  document.getElementById("edit-year").value = document.getElementById("display-year").innerText.replace(/^Year: /, "");
+  document.getElementById("edit-email").value = document.getElementById("display-email").innerText.replace(/^Email: /, "");
 
-  // Sync preview with current avatar
-  const pic     = document.getElementById("profile-pic-display");
+  const pic = document.getElementById("profile-pic-display");
   const preview = document.getElementById("pickerPreview");
-  const icon    = document.getElementById("pickerIcon");
   const removeBtn = document.getElementById("removePhotoBtn");
 
   if (pic.style.backgroundImage && pic.style.backgroundImage !== "none") {
-    const url = pic.style.backgroundImage.slice(5, -2); 
+    const url = pic.style.backgroundImage.slice(5, -2);
     preview.innerHTML = `<img src="${url}" alt="avatar">`;
     removeBtn.style.display = "block";
   } else {
-    preview.innerHTML = `<span id="pickerIcon">SN</span>`;
+    preview.innerHTML = `<span id="pickerIcon">${getInitials(storedUser.name)}</span>`;
     removeBtn.style.display = "none";
   }
 }
 
-function closeModal() { editModal.style.display = "none"; }
-
-/* Photo picker helpers */
+function closeModal() {
+  editModal.style.display = "none";
+}
 
 function handleProfilePhotoSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const dataURL = e.target.result;
 
-    // Update picker preview
+  const reader = new FileReader();
+  reader.onload = function onLoad(e) {
+    const dataURL = e.target.result;
     document.getElementById("pickerPreview").innerHTML = `<img src="${dataURL}" alt="avatar">`;
     document.getElementById("removePhotoBtn").style.display = "block";
-
-    // Store on the avatar element as a data attribute for save
     document.getElementById("profile-pic-display").dataset.pendingPhoto = dataURL;
   };
+
   reader.readAsDataURL(file);
-  // Reset input so same file can be re-selected
   event.target.value = "";
 }
 
 function removeProfilePhoto() {
-  document.getElementById("pickerPreview").innerHTML = `<span id="pickerIcon">SN</span>`;
+  document.getElementById("pickerPreview").innerHTML = `<span id="pickerIcon">${getInitials(storedUser.name)}</span>`;
   document.getElementById("removePhotoBtn").style.display = "none";
-  // Mark for removal
   document.getElementById("profile-pic-display").dataset.pendingPhoto = "remove";
 }
 
-editForm.addEventListener("submit", function (e) {
-  e.preventDefault();
-  document.getElementById("display-name").innerText    = document.getElementById("edit-name").value;
-  document.getElementById("display-college").innerText = "College: " + document.getElementById("edit-college").value;
-  document.getElementById("display-year").innerText    = "Year: " + document.getElementById("edit-year").value;
-  document.getElementById("display-email").innerText   = "Email: " + document.getElementById("edit-email").value;
+editForm.addEventListener("submit", function handleEditSubmit(event) {
+  event.preventDefault();
 
-  // Apply photo change
-  const pic     = document.getElementById("profile-pic-display");
+  const updatedName = document.getElementById("edit-name").value.trim();
+  const updatedCollege = document.getElementById("edit-college").value.trim();
+  const updatedYear = document.getElementById("edit-year").value.trim();
+  const updatedEmail = document.getElementById("edit-email").value.trim();
+
+  document.getElementById("display-name").innerText = updatedName;
+  document.getElementById("display-college").innerText = `College: ${updatedCollege}`;
+  document.getElementById("display-year").innerText = `Year: ${updatedYear}`;
+  document.getElementById("display-email").innerText = `Email: ${updatedEmail}`;
+
+  storedUser.name = updatedName;
+  storedUser.email = updatedEmail;
+  localStorage.setItem("campusconnectUser", JSON.stringify(storedUser));
+
+  const pic = document.getElementById("profile-pic-display");
   const pending = pic.dataset.pendingPhoto;
+
   if (pending === "remove") {
     pic.style.backgroundImage = "none";
-    pic.style.backgroundSize  = "";
-    pic.innerHTML = `<span class="avatar-icon">SN</span><div class="photo-overlay" onclick="openModal()">Change</div>`;
+    pic.style.backgroundSize = "";
+    pic.innerHTML = `<span class="avatar-icon">${getInitials(updatedName)}</span><div class="photo-overlay" onclick="openModal()">Change</div>`;
   } else if (pending) {
-    pic.style.backgroundImage    = `url(${pending})`;
-    pic.style.backgroundSize     = "cover";
+    pic.style.backgroundImage = `url(${pending})`;
+    pic.style.backgroundSize = "cover";
     pic.style.backgroundPosition = "center";
     pic.innerHTML = `<div class="photo-overlay" onclick="openModal()">Change</div>`;
+  } else if (!pic.style.backgroundImage || pic.style.backgroundImage === "none") {
+    pic.innerHTML = `<span class="avatar-icon">${getInitials(updatedName)}</span><div class="photo-overlay" onclick="openModal()">Change</div>`;
   }
-  delete pic.dataset.pendingPhoto;
 
+  delete pic.dataset.pendingPhoto;
   closeModal();
+  renderPosts();
 });
 
-editModal.addEventListener("click", (e) => { if (e.target === editModal) closeModal(); });
+editModal.addEventListener("click", (event) => {
+  if (event.target === editModal) {
+    closeModal();
+  }
+});
 
-// Prevent clicks inside modal-box from bubbling up to overlay
-document.querySelector("#editModal .modal-box").addEventListener("click", (e) => e.stopPropagation());
-
-/* -- CREDENTIALS EDIT ------------------------ */
+document.querySelector("#editModal .modal-box").addEventListener("click", (event) => event.stopPropagation());
 
 function openCredentialsModal() {
-  document.getElementById("edit-skills").value =
-    [...document.querySelectorAll("#skills-list li")]
-      .map(li => li.textContent.trim()).join(", ");
-  document.getElementById("edit-projects").value =
-    [...document.querySelectorAll("#projects-list li")]
-      .map(li => li.textContent.trim()).join(", ");
-  document.getElementById("edit-certifications").value =
-    [...document.querySelectorAll("#certifications-block p")]
-      .map(p => p.textContent.trim()).join(", ");
+  document.getElementById("edit-skills").value = [...document.querySelectorAll("#skills-list li")]
+    .map((li) => li.textContent.trim())
+    .join(", ");
+  document.getElementById("edit-projects").value = [...document.querySelectorAll("#projects-list li")]
+    .map((li) => li.textContent.trim())
+    .join(", ");
+  document.getElementById("edit-certifications").value = [...document.querySelectorAll("#certifications-block p")]
+    .map((p) => p.textContent.trim())
+    .join(", ");
 
   credentialsModal.style.display = "flex";
-
-  setTimeout(() => {
-    ["edit-skills", "edit-projects", "edit-certifications"].forEach((id, i) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      setTimeout(() => {
-        el.style.borderColor = "rgba(124,92,252,0.8)";
-        el.style.boxShadow   = "0 0 0 3px rgba(124,92,252,0.12)";
-        setTimeout(() => { el.style.borderColor = ""; el.style.boxShadow = ""; }, 1500);
-      }, i * 80);
-    });
-  }, 80);
 }
 
-function closeCredentialsModal() { credentialsModal.style.display = "none"; }
+function closeCredentialsModal() {
+  credentialsModal.style.display = "none";
+}
 
-credentialsForm.addEventListener("submit", function (e) {
-  e.preventDefault();
-  updateList("skills-list",   document.getElementById("edit-skills").value);
+credentialsForm.addEventListener("submit", function handleCredentialsSubmit(event) {
+  event.preventDefault();
+  updateList("skills-list", document.getElementById("edit-skills").value);
   updateList("projects-list", document.getElementById("edit-projects").value);
-  updateCertifications(       document.getElementById("edit-certifications").value);
+  updateCertifications(document.getElementById("edit-certifications").value);
   closeCredentialsModal();
 });
 
-credentialsModal.addEventListener("click", (e) => { if (e.target === credentialsModal) closeCredentialsModal(); });
-document.querySelector("#credentialsModal .modal-box").addEventListener("click", (e) => e.stopPropagation());
+credentialsModal.addEventListener("click", (event) => {
+  if (event.target === credentialsModal) {
+    closeCredentialsModal();
+  }
+});
 
-/* -- POST CREATION --------------------------- */
+document.querySelector("#credentialsModal .modal-box").addEventListener("click", (event) => event.stopPropagation());
 
 function openPostModal() {
   resetPostModal();
@@ -152,76 +217,104 @@ function closePostModal() {
 
 function resetPostModal() {
   currentMediaDataURL = null;
-  currentMediaType    = null;
+  currentMediaType = null;
   document.getElementById("post-caption").value = "";
-  document.getElementById("mediaInput").value   = "";
+  document.getElementById("mediaInput").value = "";
   document.getElementById("uploadPlaceholder").style.display = "flex";
-  document.getElementById("mediaPreviewWrap").style.display  = "none";
-  document.getElementById("imagePreview").style.display      = "none";
-  document.getElementById("videoPreview").style.display      = "none";
+  document.getElementById("mediaPreviewWrap").style.display = "none";
+  document.getElementById("imagePreview").style.display = "none";
+  document.getElementById("videoPreview").style.display = "none";
   document.getElementById("imagePreview").src = "";
   document.getElementById("videoPreview").src = "";
 }
 
 function triggerFileInput() {
-  if (!currentMediaDataURL) document.getElementById("mediaInput").click();
+  if (!currentMediaDataURL) {
+    document.getElementById("mediaInput").click();
+  }
 }
 
 function handleMediaSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
+
   const reader = new FileReader();
-  reader.onload = function (e) {
+  reader.onload = function onLoad(e) {
     currentMediaDataURL = e.target.result;
-    currentMediaType    = file.type.startsWith("video") ? "video" : "image";
+    currentMediaType = file.type.startsWith("video") ? "video" : "image";
     document.getElementById("uploadPlaceholder").style.display = "none";
-    document.getElementById("mediaPreviewWrap").style.display  = "block";
+    document.getElementById("mediaPreviewWrap").style.display = "block";
+
     if (currentMediaType === "image") {
-      document.getElementById("imagePreview").src           = currentMediaDataURL;
+      document.getElementById("imagePreview").src = currentMediaDataURL;
       document.getElementById("imagePreview").style.display = "block";
       document.getElementById("videoPreview").style.display = "none";
     } else {
-      document.getElementById("videoPreview").src           = currentMediaDataURL;
+      document.getElementById("videoPreview").src = currentMediaDataURL;
       document.getElementById("videoPreview").style.display = "block";
       document.getElementById("imagePreview").style.display = "none";
     }
   };
+
   reader.readAsDataURL(file);
 }
 
 function removeMedia(event) {
   event.stopPropagation();
-  currentMediaDataURL = null; currentMediaType = null;
+  currentMediaDataURL = null;
+  currentMediaType = null;
   document.getElementById("mediaInput").value = "";
   document.getElementById("uploadPlaceholder").style.display = "flex";
-  document.getElementById("mediaPreviewWrap").style.display  = "none";
+  document.getElementById("mediaPreviewWrap").style.display = "none";
   document.getElementById("imagePreview").src = "";
   document.getElementById("videoPreview").src = "";
 }
 
-function submitPost() {
+async function submitPost() {
   const caption = document.getElementById("post-caption").value.trim();
-  if (!currentMediaDataURL && !caption) {
+
+  if (!caption && !currentMediaDataURL) {
     alert("Please add a photo/video or write a caption.");
     return;
   }
-  posts.unshift({
-    id: Date.now(),
-    mediaURL:  currentMediaDataURL,
-    mediaType: currentMediaType,
-    caption,
-    timestamp: new Date(),
-    likes: 0, liked: false,
-    comments: [],
-    shareCount: 0,
-  });
-  renderPosts();
-  closePostModal();
+
+  try {
+    await apiRequest("/posts", {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        caption,
+        mediaURL: currentMediaDataURL || "",
+        mediaType: currentMediaType || ""
+      })
+    });
+
+    await loadPosts();
+    closePostModal();
+  } catch (error) {
+    alert(error.message || "Unable to share post.");
+  }
 }
 
-postModal.addEventListener("click", (e) => { if (e.target === postModal) closePostModal(); });
+postModal.addEventListener("click", (event) => {
+  if (event.target === postModal) {
+    closePostModal();
+  }
+});
 
-/* -- RENDER POSTS ---------------------------- */
+async function loadPosts() {
+  try {
+    const data = await apiRequest("/posts", {
+      method: "GET"
+    });
+
+    posts = data.posts.filter((post) => String(post.userId) === String(storedUser.id));
+    renderPosts();
+  } catch (error) {
+    const container = document.getElementById("posts-container");
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">Feed</div><p>${escapeHTML(error.message)}</p></div>`;
+  }
+}
 
 function renderPosts() {
   const container = document.getElementById("posts-container");
@@ -237,150 +330,156 @@ function renderPosts() {
     return;
   }
 
-  posts.forEach(p => container.appendChild(buildPostCard(p)));
+  posts.forEach((post) => container.appendChild(buildPostCard(post)));
 }
 
 function buildPostCard(post) {
-  const card      = document.createElement("div");
-  card.className  = "post-card";
+  const card = document.createElement("div");
+  card.className = "post-card";
   card.dataset.id = post.id;
-
-  const name     = document.getElementById("display-name").innerText || "You";
-  const avatarBg = document.getElementById("profile-pic-display").style.backgroundImage || "";
-
-  const avatar = avatarBg
-    ? `<div class="post-card-avatar" style="background-image:${avatarBg};background-size:cover;background-position:center;"></div>`
-    : `<div class="post-card-avatar">SN</div>`;
 
   let media = "";
   if (post.mediaURL) {
     media = post.mediaType === "image"
-      ? `<img class="post-card-media" src="${post.mediaURL}" alt="" onclick="openPostViewer(${post.id})">`
-      : `<video class="post-card-media" src="${post.mediaURL}" controls onclick="event.stopPropagation()"></video>`;
+      ? `<img class="post-card-media" src="${post.mediaURL}" alt="post media" onclick="openPostViewer('${post.id}')">`
+      : `<video class="post-card-media" src="${post.mediaURL}" controls></video>`;
   }
 
-  const caption = post.caption
-    ? `<p class="post-card-caption">${escapeHTML(post.caption)}</p>` : "";
+  const caption = post.caption ? `<p class="post-card-caption">${escapeHTML(post.caption)}</p>` : "";
 
   card.innerHTML = `
     ${media}
     <div class="post-card-body">
       <div class="post-card-author">
-        ${avatar}
-        <span class="post-card-name">${escapeHTML(name)}</span>
-        <span class="post-card-time">${formatTime(post.timestamp)}</span>
+        ${createAvatarMarkup(post.authorName)}
+        <span class="post-card-name">${escapeHTML(post.authorName)}</span>
+        <span class="post-card-time">${formatTime(post.createdAt)}</span>
       </div>
       ${caption}
       <div class="post-card-actions">
-        <button class="post-action-btn ${post.liked ? "liked" : ""}" onclick="toggleLike(${post.id})">
+        <button class="post-action-btn ${post.liked ? "liked" : ""}" onclick="toggleLike('${post.id}')">
           Like <span>${post.likes}</span>
         </button>
-        <button class="post-action-btn" onclick="openPostViewer(${post.id}, true)">
+        <button class="post-action-btn" onclick="openPostViewer('${post.id}', true)">
           Comment <span>${post.comments.length}</span>
         </button>
-        <button class="post-action-btn" onclick="sharePost(${post.id})">
-          Share <span>${post.shareCount}</span>
+        <button class="post-action-btn" onclick="sharePost('${post.id}')">
+          Share <span>${post.shareCount || 0}</span>
         </button>
-        <button class="delete-post-btn" onclick="deletePost(${post.id})">Delete</button>
+        <button class="delete-post-btn" onclick="deletePost('${post.id}')">Delete</button>
       </div>
     </div>`;
 
   return card;
 }
 
-/* -- LIKE / DELETE --------------------------- */
+async function toggleLike(id) {
+  try {
+    const data = await apiRequest(`/posts/${id}/like`, {
+      method: "POST"
+    });
 
-function toggleLike(id) {
-  const post = posts.find(p => p.id === id);
-  if (!post) return;
-  post.liked  = !post.liked;
-  post.likes += post.liked ? 1 : -1;
-  if (activePostId === id) syncViewerLike(post);
-  renderPosts();
-}
-
-function deletePost(id) {
-  if (!confirm("Delete this post?")) return;
-  posts = posts.filter(p => p.id !== id);
-  if (activePostId === id) closePostViewer();
-  renderPosts();
-}
-
-/* -- SHARE ----------------------------------- */
-
-function sharePost(id) {
-  const post = posts.find(p => p.id === id);
-  const name = document.getElementById("display-name").innerText || "Student";
-  const text = post?.caption
-    ? `"${post.caption}" — ${name} on CampusConnect`
-    : `Check out ${name}'s post on CampusConnect`;
-
-  if (navigator.share) {
-    navigator.share({ title: "CampusConnect", text, url: window.location.href })
-      .then(() => { if (post) { post.shareCount++; renderPosts(); } })
-      .catch(() => {});
-  } else {
-    navigator.clipboard.writeText(text + "\n" + window.location.href)
-      .then(() => {
-        if (post) { post.shareCount++; renderPosts(); }
-        showToast("Copied to clipboard!");
-      })
-      .catch(() => showToast(window.location.href));
+    posts = posts.map((post) => (post.id === id ? data.post : post));
+    if (activePostId === id) {
+      syncViewerLike(data.post);
+      renderComments(data.post);
+    }
+    renderPosts();
+  } catch (error) {
+    alert(error.message || "Unable to like post.");
   }
 }
 
-function showToast(msg) {
-  const t = document.getElementById("shareToast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 3000);
+async function deletePost(id) {
+  if (!confirm("Delete this post?")) {
+    return;
+  }
+
+  try {
+    await apiRequest(`/posts/${id}`, {
+      method: "DELETE"
+    });
+
+    posts = posts.filter((post) => post.id !== id);
+    if (activePostId === id) {
+      closePostViewer();
+    }
+    renderPosts();
+  } catch (error) {
+    alert(error.message || "Unable to delete post.");
+  }
 }
 
-/* -- POST VIEWER ----------------------------- */
+function sharePost(id = activePostId) {
+  const post = posts.find((item) => item.id === id);
+  const text = post?.caption
+    ? `"${post.caption}" - ${post.authorName} on CampusConnect`
+    : `Check out ${post?.authorName || "this"} post on CampusConnect`;
+
+  if (navigator.share) {
+    navigator.share({ title: "CampusConnect", text, url: window.location.href }).catch(() => {});
+    return;
+  }
+
+  navigator.clipboard.writeText(`${text}\n${window.location.href}`)
+    .then(() => showToast("Copied to clipboard!"))
+    .catch(() => showToast(window.location.href));
+}
+
+function showToast(message) {
+  const toast = document.getElementById("shareToast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 3000);
+}
 
 function openPostViewer(id, focusComment = false) {
-  const post = posts.find(p => p.id === id);
+  const post = posts.find((item) => item.id === id);
   if (!post) return;
+
   activePostId = id;
-
-  const name     = document.getElementById("display-name").innerText || "You";
-  const avatarBg = document.getElementById("profile-pic-display").style.backgroundImage || "";
-
-  const avatar = avatarBg
-    ? `<div class="comment-avatar" style="background-image:${avatarBg};background-size:cover;background-position:center;width:30px;height:30px;"></div>`
-    : `<div class="comment-avatar" style="width:30px;height:30px;">SN</div>`;
 
   let media = "";
   if (post.mediaURL) {
     media = post.mediaType === "image"
-      ? `<img src="${post.mediaURL}" alt="">`
+      ? `<img src="${post.mediaURL}" alt="post media">`
       : `<video src="${post.mediaURL}" controls></video>`;
   }
 
   const box = document.querySelector(".viewer-box");
-  post.mediaURL ? box.classList.remove("no-media") : box.classList.add("no-media");
+  if (post.mediaURL) {
+    box.classList.remove("no-media");
+  } else {
+    box.classList.add("no-media");
+  }
 
-  document.getElementById("viewerMedia").innerHTML    = media;
-  document.getElementById("viewerAuthor").innerHTML   = `${avatar} ${escapeHTML(name)}`;
+  document.getElementById("viewerMedia").innerHTML = media;
+  document.getElementById("viewerAuthor").innerHTML = `${createAvatarMarkup(post.authorName, "comment-avatar")} ${escapeHTML(post.authorName)}`;
   document.getElementById("viewerCaption").textContent = post.caption || "";
-  document.getElementById("viewerTime").textContent   = formatTime(post.timestamp);
+  document.getElementById("viewerTime").textContent = formatTime(post.createdAt);
 
   syncViewerLike(post);
   renderComments(post);
 
   postViewerModal.style.display = "flex";
   document.getElementById("commentInput").value = "";
-  if (focusComment) setTimeout(() => document.getElementById("commentInput").focus(), 200);
+  if (focusComment) {
+    setTimeout(() => document.getElementById("commentInput").focus(), 200);
+  }
 }
 
 function syncViewerLike(post) {
   const btn = document.getElementById("viewerLikeBtn");
   if (!btn) return;
-  btn.innerHTML  = `Like <span>${post.likes}</span>`;
-  btn.className  = "vaction-btn" + (post.liked ? " liked" : "");
+  btn.innerHTML = `Like <span>${post.likes}</span>`;
+  btn.className = `vaction-btn${post.liked ? " liked" : ""}`;
 }
 
-function viewerToggleLike() { if (activePostId) toggleLike(activePostId); }
+function viewerToggleLike() {
+  if (activePostId) {
+    toggleLike(activePostId);
+  }
+}
 
 function closePostViewer() {
   postViewerModal.style.display = "none";
@@ -388,31 +487,30 @@ function closePostViewer() {
   activePostId = null;
 }
 
-function handleViewerBackdrop(e) { if (e.target === postViewerModal) closePostViewer(); }
-
-/* -- COMMENTS -------------------------------- */
+function handleViewerBackdrop(event) {
+  if (event.target === postViewerModal) {
+    closePostViewer();
+  }
+}
 
 function renderComments(post) {
   const list = document.getElementById("commentsList");
   list.innerHTML = "";
 
   if (!post.comments.length) {
-    list.innerHTML = '<p class="no-comment">No comments yet — be first!</p>';
+    list.innerHTML = '<p class="no-comment">No comments yet - be first!</p>';
     return;
   }
 
-  post.comments.forEach(c => {
+  post.comments.forEach((comment) => {
     const item = document.createElement("div");
     item.className = "comment-item";
-    const av = c.avatarBg
-      ? `<div class="comment-avatar" style="background-image:${c.avatarBg};background-size:cover;background-position:center;"></div>`
-      : `<div class="comment-avatar">SN</div>`;
     item.innerHTML = `
-      ${av}
+      ${createAvatarMarkup(comment.authorName, "comment-avatar")}
       <div class="comment-body">
-        <div class="comment-name">${escapeHTML(c.name)}</div>
-        <div class="comment-text">${escapeHTML(c.text)}</div>
-        <span class="comment-time">${formatTime(c.timestamp)}</span>
+        <div class="comment-name">${escapeHTML(comment.authorName)}</div>
+        <div class="comment-text">${escapeHTML(comment.text)}</div>
+        <span class="comment-time">${formatTime(comment.createdAt)}</span>
       </div>`;
     list.appendChild(item);
   });
@@ -420,34 +518,37 @@ function renderComments(post) {
   list.scrollTop = list.scrollHeight;
 }
 
-function submitComment() {
+async function submitComment() {
   const input = document.getElementById("commentInput");
-  const text  = input.value.trim();
+  const text = input.value.trim();
   if (!text || !activePostId) return;
 
-  const post = posts.find(p => p.id === activePostId);
-  if (!post) return;
+  try {
+    const data = await apiRequest(`/posts/${activePostId}/comments`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ text })
+    });
 
-  post.comments.push({
-    id: Date.now(),
-    name:      document.getElementById("display-name").innerText || "You",
-    avatarBg:  document.getElementById("profile-pic-display").style.backgroundImage || "",
-    text,
-    timestamp: new Date(),
-  });
-
-  input.value = "";
-  renderComments(post);
-  renderPosts();
+    posts = posts.map((post) => (post.id === activePostId ? data.post : post));
+    input.value = "";
+    renderComments(data.post);
+    renderPosts();
+  } catch (error) {
+    alert(error.message || "Unable to add comment.");
+  }
 }
 
-function handleCommentKey(e) { if (e.key === "Enter") submitComment(); }
-
+function handleCommentKey(event) {
+  if (event.key === "Enter") {
+    submitComment();
+  }
+}
 
 function updateList(listId, value) {
   const ul = document.getElementById(listId);
   ul.innerHTML = "";
-  value.split(",").map(s => s.trim()).filter(Boolean).forEach(item => {
+  value.split(",").map((item) => item.trim()).filter(Boolean).forEach((item) => {
     const li = document.createElement("li");
     li.textContent = item;
     ul.appendChild(li);
@@ -457,7 +558,7 @@ function updateList(listId, value) {
 function updateCertifications(value) {
   const div = document.getElementById("certifications-block");
   div.innerHTML = "";
-  value.split(",").map(s => s.trim()).filter(Boolean).forEach(item => {
+  value.split(",").map((item) => item.trim()).filter(Boolean).forEach((item) => {
     const p = document.createElement("p");
     p.textContent = item;
     div.appendChild(p);
@@ -465,16 +566,22 @@ function updateCertifications(value) {
 }
 
 function formatTime(date) {
-  const diff = Math.floor((new Date() - date) / 1000);
-  if (diff < 60)    return "Just now";
-  if (diff < 3600)  return `${Math.floor(diff / 60)}m ago`;
+  const parsedDate = new Date(date);
+  const diff = Math.floor((Date.now() - parsedDate.getTime()) / 1000);
+  if (diff < 60) return "Just now";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return date.toLocaleDateString();
+  return parsedDate.toLocaleDateString();
 }
 
 function escapeHTML(str) {
   return String(str)
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
+syncProfileFromStorage();
+loadPosts();
