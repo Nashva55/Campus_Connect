@@ -10,6 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginCard = document.getElementById("loginCard");
   const API_BASE_URL = "http://localhost:5000/api";
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const existingRole = localStorage.getItem("campusconnectRole");
+  const existingToken = localStorage.getItem("campusconnectToken");
+
+  if (existingToken && existingRole === "admin") {
+    window.location.href = "admin.html";
+    return;
+  }
 
   function validateEmail() {
     const email = emailInput.value.trim().toLowerCase();
@@ -53,6 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function setLoadingState(isLoading) {
     loginButton.disabled = isLoading;
     loginButton.classList.toggle("loading", isLoading);
+  }
+
+  function clearSession() {
+    localStorage.removeItem("campusconnectToken");
+    localStorage.removeItem("campusconnectRole");
+    localStorage.removeItem("campusconnectUser");
   }
 
   emailInput.addEventListener("input", () => {
@@ -135,6 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (data.role !== "admin") {
+        clearSession();
         throw new Error("This page is only for admin accounts.");
       }
 

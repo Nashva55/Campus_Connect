@@ -1,5 +1,6 @@
 const API_BASE_URL = "http://localhost:5000/api";
 const SOCKET_SERVER_URL = "http://localhost:5000";
+const UNREAD_STORAGE_KEY = "campusconnectUnreadMessages";
 const token = localStorage.getItem("campusconnectToken");
 const storedUser = JSON.parse(localStorage.getItem("campusconnectUser") || "null");
 
@@ -35,6 +36,7 @@ let activeConversationId = null;
 let activeMessages = [];
 let joinedConversationId = null;
 let socket = null;
+let toastTimer = null;
 
 function getAuthHeaders() {
   return {
@@ -104,11 +106,50 @@ function sortConversations() {
   conversations.sort((a, b) => new Date(b.lastMessageAt || 0) - new Date(a.lastMessageAt || 0));
 }
 
+function getTotalUnread() {
+  return conversations.reduce((total, conversation) => total + (conversation.unreadCount || 0), 0);
+}
+
+function syncUnreadState() {
+  localStorage.setItem(UNREAD_STORAGE_KEY, String(getTotalUnread()));
+}
+
+function getOrCreateToast() {
+  let toast = document.getElementById("messageToast");
+
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "messageToast";
+    toast.className = "message-toast";
+    document.body.appendChild(toast);
+  }
+
+  return toast;
+}
+
+function showIncomingToast(conversation) {
+  const toast = getOrCreateToast();
+  toast.innerHTML = `
+    <strong>New message</strong>
+    <span>${escapeHTML(conversation.name)}</span>
+  `;
+  toast.classList.add("show");
+
+  if (toastTimer) {
+    clearTimeout(toastTimer);
+  }
+
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2800);
+}
+
 async function loadConversations() {
   const data = await apiRequest("/messages/conversations", { method: "GET" });
   conversations = data.conversations || [];
   sortConversations();
   renderConversationList();
+  syncUnreadState();
 
   if (activeConversationId) {
     const stillExists = conversations.some((conversation) => conversation.id === activeConversationId);
@@ -145,7 +186,7 @@ function renderConversationList() {
   filtered.forEach((conversation) => {
     const item = document.createElement("button");
     item.type = "button";
-    item.className = `conversation-item${conversation.id === activeConversationId ? " active" : ""}`;
+    item.className = `conversation-item${conversation.id === activeConversationId ? " active" : ""}${conversation.unreadCount ? " has-unread" : ""}`;
     item.innerHTML = `
       <div class="conversation-top">
         <div class="entity-avatar">${escapeHTML(getInitials(conversation.name))}</div>
@@ -153,6 +194,7 @@ function renderConversationList() {
           <strong>${escapeHTML(conversation.name)}</strong>
           <p>${escapeHTML(conversation.subtitle || (conversation.isGroup ? "Group chat" : "Direct chat"))}</p>
         </div>
+        ${conversation.unreadCount ? `<span class="unread-chip">${conversation.unreadCount}</span>` : ""}
       </div>
       <div class="conversation-bottom">
         <span>${escapeHTML(conversation.lastMessageText || "No messages yet")}</span>
@@ -237,6 +279,13 @@ function joinConversationRoom(conversationId) {
   socket.emit("conversation:join", conversationId);
 }
 
+async function markConversationAsRead(conversationId) {
+  const data = await apiRequest(`/messages/conversations/${conversationId}/read`, {
+    method: "POST"
+  });
+  upsertConversation(data.conversation);
+}
+
 async function startDirectConversation(targetUserId) {
   try {
     const data = await apiRequest("/messages/conversations/direct", {
@@ -315,6 +364,7 @@ function upsertConversation(conversation) {
 
   sortConversations();
   renderConversationList();
+  syncUnreadState();
 }
 
 function appendIncomingMessage(message) {
@@ -398,7 +448,19 @@ function connectSocket() {
   });
 
   socket.on("conversation:updated", ({ conversation }) => {
+    const previous = conversations.find((item) => item.id === conversation.id);
+    const previousUnread = previous?.unreadCount || 0;
+    const isActiveConversation = String(conversation.id) === String(activeConversationId);
+
     upsertConversation(conversation);
+
+    if (!isActiveConversation && conversation.unreadCount > previousUnread) {
+      showIncomingToast(conversation);
+    }
+
+    if (isActiveConversation && conversation.unreadCount > 0) {
+      markConversationAsRead(conversation.id).catch(() => {});
+    }
   });
 
   socket.on("message:new", ({ chatMessage, conversationId }) => {
@@ -407,6 +469,10 @@ function connectSocket() {
     }
 
     appendIncomingMessage(chatMessage);
+
+    if (String(chatMessage.senderId) !== String(storedUser.id)) {
+      markConversationAsRead(conversationId).catch(() => {});
+    }
   });
 }
 

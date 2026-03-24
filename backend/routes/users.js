@@ -5,15 +5,37 @@ const { verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
 
+router.get("/me/network", verifyToken, async (request, response) => {
+  try {
+    const currentUser = await User.findById(request.user._id);
+
+    response.json({
+      userId: String(currentUser._id),
+      followingIds: currentUser.following.map((id) => String(id)),
+      followerIds: currentUser.followers.map((id) => String(id)),
+      followingCount: currentUser.following.length,
+      followersCount: currentUser.followers.length
+    });
+  } catch (error) {
+    response.status(500).json({ message: "Unable to load network info.", error: error.message });
+  }
+});
+
 router.get("/directory", verifyToken, async (request, response) => {
   try {
+    const currentUser = await User.findById(request.user._id);
+    const followingSet = new Set(currentUser.following.map((id) => id.toString()));
+
     const users = await User.find({
       _id: { $ne: request.user._id },
       role: "student"
     }).sort({ name: 1 });
 
     response.json({
-      users: users.map((user) => user.toSafeObject())
+      users: users.map((user) => ({
+        ...user.toSafeObject(),
+        isFollowing: followingSet.has(String(user._id))
+      }))
     });
   } catch (error) {
     response.status(500).json({ message: "Unable to load users.", error: error.message });
@@ -77,7 +99,11 @@ router.post("/:id/follow", verifyToken, async (request, response) => {
         ...targetUser.toSafeObject(),
         isFollowing
       },
-      currentUser: currentUser.toSafeObject()
+      currentUser: currentUser.toSafeObject(),
+      network: {
+        followingIds: currentUser.following.map((id) => String(id)),
+        followerIds: currentUser.followers.map((id) => String(id))
+      }
     });
   } catch (error) {
     response.status(500).json({ message: "Unable to update follow status.", error: error.message });

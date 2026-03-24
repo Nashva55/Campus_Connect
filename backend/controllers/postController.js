@@ -116,10 +116,31 @@ async function addComment(request, response) {
   }
 }
 
+async function sharePost(request, response) {
+  try {
+    const post = await Post.findById(request.params.id);
+
+    if (!post) {
+      return response.status(404).json({ message: "Post not found." });
+    }
+
+    post.shareCount += 1;
+    await post.save();
+
+    response.json({
+      message: "Post shared successfully.",
+      post: post.toClientObject(request.user._id)
+    });
+  } catch (error) {
+    response.status(500).json({ message: "Unable to share post.", error: error.message });
+  }
+}
+
 module.exports = {
   getPosts,
   createPost,
   deletePost,
   toggleLike,
-  addComment
+  addComment,
+  sharePost
 };

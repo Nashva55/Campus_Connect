@@ -22,23 +22,129 @@
   </header>
 
   <main class="feed-shell">
-    <section class="feed-hero">
-      <div>
-        <p class="feed-eyebrow">Campus Feed</p>
-        <h1>See what everyone is sharing</h1>
-        <p>Posts from students across CampusConnect appear here from the shared backend, with likes and comments synced across the app.</p>
-      </div>
-      <a class="feed-action" href="profile.html">Create Post</a>
-    </section>
+    <section class="feed-layout">
+      <section class="feed-main-column">
+        <section class="feed-toolbar surface-card">
+          <div class="feed-toolbar-left">
+            <div>
+              <p class="feed-eyebrow">Campus Feed</p>
+              <h1>Latest updates</h1>
+            </div>
+            <div class="feed-filters" id="feedFilters">
+              <button class="filter-chip active" data-filter="all">All</button>
+              <button class="filter-chip" data-filter="following">Following</button>
+              <button class="filter-chip" data-filter="mine">My Posts</button>
+              <button class="filter-chip" data-filter="media">Media</button>
+            </div>
+          </div>
+          <div class="feed-toolbar-right">
+            <div class="feed-stat-pills">
+              <span class="feed-stat-pill">Following <strong id="heroFollowingCount">0</strong></span>
+              <span class="feed-stat-pill">Saved <strong id="heroSavedCount">0</strong></span>
+            </div>
+            <div class="sort-wrap">
+              <label class="sort-label" for="feedSort">Sort</label>
+              <select id="feedSort" class="sort-select">
+                <option value="newest">Newest</option>
+                <option value="liked">Most liked</option>
+                <option value="following">Following first</option>
+              </select>
+            </div>
+          </div>
+        </section>
 
-    <section class="feed-stream" id="feedPosts">
-      <div class="feed-empty">
-        <h3>Loading posts...</h3>
-        <p>Campus updates and student posts will appear here.</p>
-      </div>
+        <section class="feed-highlights-grid" id="feedHighlights">
+          <article class="highlight-card surface-card highlight-card-accent">
+            <span class="highlight-kicker">Trending</span>
+            <h3>Campus highlights</h3>
+            <p>Most active posts and strongest engagement today.</p>
+            <div class="highlight-meta" id="trendingSummary">Loading highlights...</div>
+          </article>
+          <article class="highlight-card surface-card">
+            <span class="highlight-kicker">Upcoming</span>
+            <h3>Events and opportunities</h3>
+            <ul class="highlight-list">
+              <li>Hackathon registrations close this week</li>
+              <li>Frontend internship applications are open</li>
+              <li>Placement prep workshop starts tomorrow</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="feed-stream" id="feedPosts">
+          <div class="feed-empty">
+            <h3>Loading posts...</h3>
+            <p>Campus updates and student posts will appear here.</p>
+          </div>
+        </section>
+      </section>
+
+      <aside class="feed-side-column">
+        <article class="surface-card side-card">
+          <div class="side-card-head">
+            <div>
+              <span class="feed-eyebrow">Suggestions</span>
+              <h2>People you may know</h2>
+            </div>
+          </div>
+          <div class="suggestion-list" id="suggestionList">
+            <div class="feed-empty compact-empty">
+              <h3>Loading suggestions...</h3>
+            </div>
+          </div>
+        </article>
+
+        <article class="surface-card side-card">
+          <div class="side-card-head">
+            <div>
+              <span class="feed-eyebrow">Saved</span>
+              <h2>Bookmarked posts</h2>
+            </div>
+          </div>
+          <div class="saved-list" id="savedList">
+            <div class="feed-empty compact-empty">
+              <h3>No saved posts yet</h3>
+            </div>
+          </div>
+        </article>
+      </aside>
     </section>
   </main>
 
+  <button class="feed-create-fab" id="openComposerBtn" type="button" aria-label="Create post">+</button>
+
+  <div class="modal-overlay" id="composerModal">
+    <div class="modal-box composer-modal-box">
+      <div class="modal-head">
+        <div class="composer-user">
+          <div class="composer-avatar" id="composerAvatar">SN</div>
+          <div>
+            <strong id="composerName">Student</strong>
+            <p>Create a new campus update</p>
+          </div>
+        </div>
+        <button class="modal-close" id="closeComposerBtn">&times;</button>
+      </div>
+      <div class="composer-box">
+        <textarea id="composerCaption" placeholder="What would you like to share with CampusConnect?"></textarea>
+        <div class="composer-toolbar">
+          <label class="composer-media-btn" for="composerMediaInput">Add photo or video</label>
+          <span class="composer-hint">Posts appear in your profile and the shared feed</span>
+        </div>
+        <input type="file" id="composerMediaInput" accept="image/*,video/*" hidden>
+        <div class="composer-preview" id="composerPreview" style="display:none;">
+          <img id="composerPreviewImage" alt="preview" style="display:none;">
+          <video id="composerPreviewVideo" controls style="display:none;"></video>
+          <button class="composer-remove-media" id="composerRemoveMediaBtn" type="button">Remove</button>
+        </div>
+      </div>
+      <button class="composer-submit-btn composer-submit-full" id="composerSubmitBtn" type="button">Post</button>
+    </div>
+  </div>
+
   <script src="../js/pages/feed.js"></script>
+  <script src="../js/common/message-badge.js"></script>
 </body>
 </html>
+
+

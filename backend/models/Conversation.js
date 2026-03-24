@@ -37,14 +37,27 @@ const conversationSchema = new mongoose.Schema(
     lastMessageAt: {
       type: Date,
       default: Date.now
-    }
+    },
+    readState: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true
+        },
+        lastReadAt: {
+          type: Date,
+          default: Date.now
+        }
+      }
+    ]
   },
   {
     timestamps: true
   }
 );
 
-conversationSchema.methods.toClientObject = function toClientObject(currentUserId) {
+conversationSchema.methods.toClientObject = function toClientObject(currentUserId, extras = {}) {
   const memberObjects = (this.members || []).map((member) => ({
     id: member._id || member.id || member,
     name: member.name,
@@ -67,7 +80,8 @@ conversationSchema.methods.toClientObject = function toClientObject(currentUserI
     lastMessageText: this.lastMessageText,
     lastMessageSenderName: this.lastMessageSenderName,
     lastMessageAt: this.lastMessageAt,
-    isGroup: this.type === "group"
+    isGroup: this.type === "group",
+    unreadCount: extras.unreadCount || 0
   };
 };
 

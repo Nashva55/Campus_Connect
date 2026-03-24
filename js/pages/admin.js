@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const nameInput = document.getElementById("studentName");
   const emailInput = document.getElementById("studentEmail");
   const passwordInput = document.getElementById("studentPassword");
+  const togglePasswordButton = document.getElementById("toggleStudentPassword");
   const message = document.getElementById("adminMessage");
   const token = localStorage.getItem("campusconnectToken");
   const role = localStorage.getItem("campusconnectRole");
@@ -13,21 +14,30 @@ document.addEventListener("DOMContentLoaded", () => {
     message.classList.toggle("success", type === "success");
   }
 
-  if (!token) {
-    setMessage("Admin access requires login first. Redirecting to login...");
+  function redirectToAdminLogin(text) {
+    setMessage(text);
     setTimeout(() => {
-      window.location.href = "login.html";
+      window.location.href = "instructor-login.html";
     }, 1200);
+  }
+
+  if (!token) {
+    redirectToAdminLogin("Admin access requires login first. Redirecting...");
     return;
   }
 
   if (role !== "admin") {
-    setMessage("Only admin accounts can access this page. Redirecting...");
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1200);
+    redirectToAdminLogin("Only admin accounts can access this page. Redirecting...");
     return;
   }
+
+  togglePasswordButton.addEventListener("click", () => {
+    const isVisible = passwordInput.type === "text";
+    passwordInput.type = isVisible ? "password" : "text";
+    togglePasswordButton.classList.toggle("is-visible", !isVisible);
+    togglePasswordButton.setAttribute("aria-label", isVisible ? "Show password" : "Hide password");
+    togglePasswordButton.setAttribute("aria-pressed", String(!isVisible));
+  });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -75,6 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.removeItem("campusconnectToken");
           localStorage.removeItem("campusconnectRole");
           localStorage.removeItem("campusconnectUser");
+          redirectToAdminLogin(data.message || "Admin session expired. Redirecting...");
+          return;
         }
 
         throw new Error(data.message || "Unable to create student.");
@@ -82,6 +94,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setMessage(data.message, "success");
       form.reset();
+      passwordInput.type = "password";
+      togglePasswordButton.classList.remove("is-visible");
+      togglePasswordButton.setAttribute("aria-label", "Show password");
+      togglePasswordButton.setAttribute("aria-pressed", "false");
     } catch (error) {
       setMessage(error.message || "Something went wrong.");
     }

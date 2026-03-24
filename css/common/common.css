@@ -243,3 +243,28 @@ body {
 
 
 
+
+.nav-message-link {
+  position: relative;
+}
+
+.nav-message-link.has-unread {
+  color: #f0f0f5;
+}
+
+.nav-badge {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: 2px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.3);
+}
