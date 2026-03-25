@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginCard = document.getElementById("loginCard");
   const API_BASE_URL = "http://localhost:5000/api";
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const existingRole = localStorage.getItem("campusconnectRole");
-  const existingToken = localStorage.getItem("campusconnectToken");
+  const existingRole = window.CampusConnectAuth.getRole();
+  const existingToken = window.CampusConnectAuth.getToken();
 
   if (existingToken && existingRole === "admin") {
     window.location.href = "admin.html";
@@ -63,9 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function clearSession() {
-    localStorage.removeItem("campusconnectToken");
-    localStorage.removeItem("campusconnectRole");
-    localStorage.removeItem("campusconnectUser");
+    window.CampusConnectAuth.clearSession();
   }
 
   emailInput.addEventListener("input", () => {
@@ -152,9 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error("This page is only for admin accounts.");
       }
 
-      localStorage.setItem("campusconnectToken", data.token);
-      localStorage.setItem("campusconnectRole", data.role);
-      localStorage.setItem("campusconnectUser", JSON.stringify(data.user));
+      window.CampusConnectAuth.setSession({ token: data.token, role: data.role, user: data.user });
 
       setMessage("Admin login successful. Redirecting...", "success");
 
@@ -168,3 +164,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+

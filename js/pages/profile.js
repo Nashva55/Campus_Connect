@@ -1,6 +1,6 @@
 const API_BASE_URL = "http://localhost:5000/api";
-const token = localStorage.getItem("campusconnectToken");
-const storedUser = JSON.parse(localStorage.getItem("campusconnectUser") || "null");
+const token = window.CampusConnectAuth.getToken();
+const storedUser = window.CampusConnectAuth.getUser();
 
 if (!token || !storedUser) {
   window.location.href = "login.html";
@@ -12,6 +12,9 @@ const credentialsModal = document.getElementById("credentialsModal");
 const credentialsForm = document.getElementById("credentialsForm");
 const postModal = document.getElementById("postModal");
 const postViewerModal = document.getElementById("postViewerModal");
+const connectionsModal = document.getElementById("connectionsModal");
+const connectionsTitle = document.getElementById("connectionsTitle");
+const connectionsList = document.getElementById("connectionsList");
 
 let posts = [];
 let currentMediaDataURL = null;
@@ -61,11 +64,11 @@ function syncFollowStats(user = storedUser) {
   const following = document.getElementById("display-following");
 
   if (followers) {
-    followers.textContent = `Followers: ${user.followersCount || 0}`;
+    followers.textContent = String(user.followersCount || 0);
   }
 
   if (following) {
-    following.textContent = `Following: ${user.followingCount || 0}`;
+    following.textContent = String(user.followingCount || 0);
   }
 }
 
@@ -78,7 +81,7 @@ function syncProfileFromStorage() {
   const pickerPreview = document.getElementById("pickerPreview");
 
   displayName.innerText = storedUser.name || "Student Name";
-  displayEmail.innerText = `Email: ${storedUser.email || "student@college.edu"}`;
+  displayEmail.innerText = storedUser.email || "student@college.edu";
   editName.value = storedUser.name || "";
   editEmail.value = storedUser.email || "";
 
@@ -101,9 +104,9 @@ async function loadOwnProfileStats() {
 
     storedUser.followersCount = data.user.followersCount || 0;
     storedUser.followingCount = data.user.followingCount || 0;
-    localStorage.setItem("campusconnectUser", JSON.stringify(storedUser));
+    window.CampusConnectAuth.updateUser(storedUser);
     syncFollowStats(storedUser);
-  } catch (error) {
+  } catch {
     syncFollowStats(storedUser);
   }
 }
@@ -111,9 +114,9 @@ async function loadOwnProfileStats() {
 function openModal() {
   editModal.style.display = "flex";
   document.getElementById("edit-name").value = document.getElementById("display-name").innerText;
-  document.getElementById("edit-college").value = document.getElementById("display-college").innerText.replace(/^College: /, "");
-  document.getElementById("edit-year").value = document.getElementById("display-year").innerText.replace(/^Year: /, "");
-  document.getElementById("edit-email").value = document.getElementById("display-email").innerText.replace(/^Email: /, "");
+  document.getElementById("edit-college").value = document.getElementById("display-college").innerText;
+  document.getElementById("edit-year").value = document.getElementById("display-year").innerText;
+  document.getElementById("edit-email").value = document.getElementById("display-email").innerText;
 
   const pic = document.getElementById("profile-pic-display");
   const preview = document.getElementById("pickerPreview");
@@ -164,13 +167,13 @@ editForm.addEventListener("submit", function handleEditSubmit(event) {
   const updatedEmail = document.getElementById("edit-email").value.trim();
 
   document.getElementById("display-name").innerText = updatedName;
-  document.getElementById("display-college").innerText = `College: ${updatedCollege}`;
-  document.getElementById("display-year").innerText = `Year: ${updatedYear}`;
-  document.getElementById("display-email").innerText = `Email: ${updatedEmail}`;
+  document.getElementById("display-college").innerText = updatedCollege;
+  document.getElementById("display-year").innerText = updatedYear;
+  document.getElementById("display-email").innerText = updatedEmail;
 
   storedUser.name = updatedName;
   storedUser.email = updatedEmail;
-  localStorage.setItem("campusconnectUser", JSON.stringify(storedUser));
+  window.CampusConnectAuth.updateUser(storedUser);
 
   const pic = document.getElementById("profile-pic-display");
   const pending = pic.dataset.pendingPhoto;
@@ -334,15 +337,12 @@ postModal.addEventListener("click", (event) => {
 
 async function loadPosts() {
   try {
-    const data = await apiRequest("/posts", {
-      method: "GET"
-    });
-
+    const data = await apiRequest("/posts", { method: "GET" });
     posts = data.posts.filter((post) => String(post.userId) === String(storedUser.id));
     renderPosts();
   } catch (error) {
     const container = document.getElementById("posts-container");
-    container.innerHTML = `<div class="empty-state"><div class="empty-icon">Feed</div><p>${escapeHTML(error.message)}</p></div>`;
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">Error</div><p>${escapeHTML(error.message)}</p></div>`;
   }
 }
 
@@ -353,9 +353,10 @@ function renderPosts() {
   if (!posts.length) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-icon">No Posts</div>
-        <p>No posts yet</p>
-        <span>Click <strong>+ New Post</strong> to share something with your campus</span>
+        <div class="empty-state-icon">Post</div>
+        <h3>No posts yet</h3>
+        <p>Create a post to start your timeline.</p>
+        <button class="primary-btn" onclick="openPostModal()">Create Post</button>
       </div>`;
     return;
   }
@@ -405,10 +406,7 @@ function buildPostCard(post) {
 
 async function toggleLike(id) {
   try {
-    const data = await apiRequest(`/posts/${id}/like`, {
-      method: "POST"
-    });
-
+    const data = await apiRequest(`/posts/${id}/like`, { method: "POST" });
     posts = posts.map((post) => (post.id === id ? data.post : post));
     if (activePostId === id) {
       syncViewerLike(data.post);
@@ -426,10 +424,7 @@ async function deletePost(id) {
   }
 
   try {
-    await apiRequest(`/posts/${id}`, {
-      method: "DELETE"
-    });
-
+    await apiRequest(`/posts/${id}`, { method: "DELETE" });
     posts = posts.filter((post) => post.id !== id);
     if (activePostId === id) {
       closePostViewer();
@@ -575,6 +570,46 @@ function handleCommentKey(event) {
   }
 }
 
+async function openConnectionsModal(type) {
+  connectionsModal.style.display = "flex";
+  connectionsTitle.textContent = type === "followers" ? "Followers" : "Following";
+  connectionsList.innerHTML = '<p class="connections-empty">Loading...</p>';
+
+  try {
+    const data = await apiRequest(`/users/${storedUser.id}/connections?type=${type}`, { method: "GET" });
+
+    if (!data.users.length) {
+      connectionsList.innerHTML = `<p class="connections-empty">No ${type} yet.</p>`;
+      return;
+    }
+
+    connectionsList.innerHTML = data.users.map((user) => `
+      <a class="connection-item" href="user-profile.html?id=${encodeURIComponent(user.id)}">
+        <div class="connection-avatar">${escapeHTML(getInitials(user.name))}</div>
+        <div class="connection-copy">
+          <strong>${escapeHTML(user.name)}</strong>
+          <span>${escapeHTML(user.email)}</span>
+        </div>
+      </a>`).join("");
+  } catch (error) {
+    connectionsList.innerHTML = `<p class="connections-empty">${escapeHTML(error.message)}</p>`;
+  }
+}
+
+function closeConnectionsModal() {
+  connectionsModal.style.display = "none";
+}
+
+connectionsModal?.addEventListener("click", (event) => {
+  if (event.target === connectionsModal) {
+    closeConnectionsModal();
+  }
+});
+
+document.querySelectorAll("#connectionsModal .modal-box").forEach((element) => {
+  element.addEventListener("click", (event) => event.stopPropagation());
+});
+
 function updateList(listId, value) {
   const ul = document.getElementById(listId);
   ul.innerHTML = "";
@@ -612,6 +647,30 @@ function escapeHTML(str) {
     .replace(/\"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
+
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.handleProfilePhotoSelect = handleProfilePhotoSelect;
+window.removeProfilePhoto = removeProfilePhoto;
+window.openCredentialsModal = openCredentialsModal;
+window.closeCredentialsModal = closeCredentialsModal;
+window.openPostModal = openPostModal;
+window.closePostModal = closePostModal;
+window.triggerFileInput = triggerFileInput;
+window.handleMediaSelect = handleMediaSelect;
+window.removeMedia = removeMedia;
+window.submitPost = submitPost;
+window.toggleLike = toggleLike;
+window.deletePost = deletePost;
+window.sharePost = sharePost;
+window.openPostViewer = openPostViewer;
+window.viewerToggleLike = viewerToggleLike;
+window.closePostViewer = closePostViewer;
+window.handleViewerBackdrop = handleViewerBackdrop;
+window.submitComment = submitComment;
+window.handleCommentKey = handleCommentKey;
+window.openConnectionsModal = openConnectionsModal;
+window.closeConnectionsModal = closeConnectionsModal;
 
 syncProfileFromStorage();
 loadOwnProfileStats();

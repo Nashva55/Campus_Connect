@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const token = localStorage.getItem("campusconnectToken");
-  const storedUser = JSON.parse(localStorage.getItem("campusconnectUser") || "null");
+  const token = window.CampusConnectAuth.getToken();
+  const storedUser = window.CampusConnectAuth.getUser();
   const params = new URLSearchParams(window.location.search);
   const userId = params.get("id");
 
@@ -9,8 +9,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const profileEmail = document.getElementById("profileEmail");
   const followersCount = document.getElementById("followersCount");
   const followingCount = document.getElementById("followingCount");
+  const followersTrigger = document.getElementById("followersTrigger");
+  const followingTrigger = document.getElementById("followingTrigger");
   const userPosts = document.getElementById("userPosts");
   const followButton = document.getElementById("followButton");
+  const connectionsModal = document.getElementById("connectionsModal");
+  const connectionsTitle = document.getElementById("connectionsTitle");
+  const connectionsList = document.getElementById("connectionsList");
+  const closeConnectionsModalBtn = document.getElementById("closeConnectionsModalBtn");
 
   if (!token || !storedUser) {
     window.location.href = "login.html";
@@ -55,8 +61,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function renderFollowState(user) {
-    followersCount.textContent = user.followersCount || 0;
-    followingCount.textContent = user.followingCount || 0;
+    followersCount.textContent = String(user.followersCount || 0);
+    followingCount.textContent = String(user.followingCount || 0);
     followButton.textContent = user.isFollowing ? "Following" : "Follow";
     followButton.classList.toggle("is-following", Boolean(user.isFollowing));
   }
@@ -116,8 +122,49 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderPosts(data.posts);
   }
 
+  async function openConnectionsModal(type) {
+    connectionsModal.style.display = "flex";
+    connectionsTitle.textContent = type === "followers" ? "Followers" : "Following";
+    connectionsList.innerHTML = '<p class="connections-empty">Loading...</p>';
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/${userId}/connections?type=${type}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Unable to load connections.");
+      }
+
+      if (!data.users.length) {
+        connectionsList.innerHTML = `<p class="connections-empty">No ${type} yet.</p>`;
+        return;
+      }
+
+      connectionsList.innerHTML = data.users.map((user) => `
+        <a class="connection-item" href="user-profile.html?id=${encodeURIComponent(user.id)}">
+          <div class="connection-avatar">${escapeHTML(getInitials(user.name))}</div>
+          <div class="connection-copy">
+            <strong>${escapeHTML(user.name)}</strong>
+            <span>${escapeHTML(user.email)}</span>
+          </div>
+        </a>`).join("");
+    } catch (error) {
+      connectionsList.innerHTML = `<p class="connections-empty">${escapeHTML(error.message)}</p>`;
+    }
+  }
+
+  function closeConnectionsModal() {
+    connectionsModal.style.display = "none";
+  }
+
   followButton.addEventListener("click", async () => {
     try {
+      followButton.disabled = true;
+
       const response = await fetch(`http://localhost:5000/api/users/${userId}/follow`, {
         method: "POST",
         headers: {
@@ -132,15 +179,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       renderFollowState(data.user);
-      localStorage.setItem("campusconnectUser", JSON.stringify({
+      window.CampusConnectAuth.updateUser({
         ...storedUser,
         followersCount: data.currentUser.followersCount,
         followingCount: data.currentUser.followingCount
-      }));
+      });
     } catch (error) {
       alert(error.message || "Unable to update follow status.");
+    } finally {
+      followButton.disabled = false;
     }
   });
+
+  followersTrigger.addEventListener("click", () => openConnectionsModal("followers"));
+  followingTrigger.addEventListener("click", () => openConnectionsModal("following"));
+  closeConnectionsModalBtn.addEventListener("click", closeConnectionsModal);
+  connectionsModal.addEventListener("click", (event) => {
+    if (event.target === connectionsModal) {
+      closeConnectionsModal();
+    }
+  });
+  document.querySelector("#connectionsModal .modal-box").addEventListener("click", (event) => event.stopPropagation());
 
   try {
     await loadProfile();
@@ -150,6 +209,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         <h3>Unable to load profile</h3>
         <p>${escapeHTML(error.message)}</p>
       </div>`;
-      followButton.style.display = "none";
+    followButton.style.display = "none";
   }
 });

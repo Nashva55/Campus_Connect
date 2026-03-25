@@ -43,7 +43,6 @@
           <div class="hero-title-row">
             <div>
               <h1 id="display-name">Student Name</h1>
-              <p class="hero-description">Your campus identity, portfolio signals, and social activity live here. Keep this page current so your feed presence and public profile stay aligned.</p>
             </div>
             <button class="primary-btn compact-btn" onclick="openModal()">Edit Profile</button>
           </div>
@@ -51,61 +50,39 @@
           <div class="hero-meta-grid">
             <div class="meta-card">
               <span class="meta-label">College</span>
-              <strong id="display-college">College: University of Technology</strong>
+              <strong id="display-college">University of Technology</strong>
             </div>
             <div class="meta-card">
               <span class="meta-label">Year</span>
-              <strong id="display-year">Year: 3rd Year</strong>
+              <strong id="display-year">3rd Year</strong>
             </div>
             <div class="meta-card meta-card-wide">
               <span class="meta-label">Email</span>
-              <strong id="display-email">Email: student@college.edu</strong>
+              <strong id="display-email">student@college.edu</strong>
             </div>
           </div>
         </div>
       </div>
 
       <div class="hero-side-rail">
-        <article class="metric-card metric-card-highlight">
+        <article class="metric-card metric-card-highlight metric-card-clickable" onclick="openConnectionsModal('followers')">
           <span class="metric-label">Followers</span>
-          <strong id="display-followers">Followers: 0</strong>
-          <p>People who keep track of your updates and projects.</p>
+          <strong id="display-followers">0</strong>
         </article>
-        <article class="metric-card">
+        <article class="metric-card metric-card-clickable" onclick="openConnectionsModal('following')">
           <span class="metric-label">Following</span>
-          <strong id="display-following">Following: 0</strong>
-          <p>Profiles and peers you actively follow on campus.</p>
-        </article>
-        <article class="metric-card">
-          <span class="metric-label">Profile Status</span>
-          <strong>Public And Active</strong>
-          <p>Posts, credentials, and identity are available from one profile.</p>
+          <strong id="display-following">0</strong>
         </article>
       </div>
     </section>
 
     <section class="profile-main-grid">
       <aside class="profile-sidebar">
-        <article class="surface-card sidebar-intro-card">
-          <div class="section-head">
-            <div>
-              <span class="eyebrow">Workspace</span>
-              <h2>Manage your profile</h2>
-            </div>
-            <button class="ghost-link" onclick="openModal()">Open</button>
-          </div>
-          <p class="section-copy">Use this page to maintain your profile details, credentials, and post activity without switching between multiple tools.</p>
-          <div class="action-stack">
-            <button class="primary-btn" onclick="openModal()">Edit personal details</button>
-            <button class="secondary-btn" onclick="openCredentialsModal()">Update skills and projects</button>
-          </div>
-        </article>
-
         <article class="surface-card credentials-card">
           <div class="section-head">
             <div>
               <span class="eyebrow">Credentials</span>
-              <h2>Academic and skill stack</h2>
+              <h2>Skills and work</h2>
             </div>
             <button class="ghost-link" onclick="openCredentialsModal()">Edit</button>
           </div>
@@ -146,41 +123,21 @@
       </aside>
 
       <section class="profile-content-column">
-        <article class="surface-card composer-card">
-          <div class="section-head section-head-wide">
-            <div>
-              <span class="eyebrow">Publishing</span>
-              <h2>Share with your campus network</h2>
-              <p class="section-copy">New posts published here also appear in the shared feed. Use posts for updates, project snapshots, event moments, or announcements.</p>
-            </div>
-            <button class="primary-btn" onclick="openPostModal()">Create Post</button>
-          </div>
-          <div class="composer-strip">
-            <button class="composer-trigger" onclick="openPostModal()">Write an update, add media, and publish to your feed</button>
-            <div class="composer-hints">
-              <span>Posts sync to profile</span>
-              <span>Posts sync to feed</span>
-              <span>Likes and comments stay live</span>
-            </div>
-          </div>
-        </article>
-
         <article class="surface-card posts-card">
           <div class="section-head section-head-wide posts-header">
             <div>
               <span class="eyebrow">Timeline</span>
               <h2>Your posts</h2>
-              <p class="section-copy">Everything you publish lives here as your personal timeline and appears in the broader CampusConnect feed.</p>
             </div>
-            <button class="secondary-btn compact-btn" onclick="openPostModal()">New Post</button>
+            <button class="primary-btn compact-btn" onclick="openPostModal()">New Post</button>
           </div>
 
           <div class="posts-feed" id="posts-container">
             <div class="empty-state">
               <div class="empty-state-icon">Post</div>
               <h3>No posts yet</h3>
-              <p>Create your first update to start building your profile activity.</p>
-              <button class="primary-btn" onclick="openPostModal()">Create First Post</button>
+              <p>Create a post to start your timeline.</p>
+              <button class="primary-btn" onclick="openPostModal()">Create Post</button>
             </div>
           </div>
         </article>
@@ -200,8 +157,7 @@
             <span id="pickerIcon">SN</span>
           </div>
           <div class="photo-picker-options">
-            <label class="photo-option-btn" for="profilePhotoInput">Choose from files</label>
-            <label class="photo-option-btn" for="profileCameraInput">Take photo</label>
+            <label class="photo-option-btn" for="profilePhotoInput">Choose photo</label>
             <button type="button" class="photo-option-btn remove-btn" id="removePhotoBtn" onclick="removeProfilePhoto()" style="display:none;">Remove current photo</button>
           </div>
         </div>
@@ -229,7 +185,6 @@
   </div>
 
   <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;" onchange="handleProfilePhotoSelect(event)">
-  <input type="file" id="profileCameraInput" accept="image/*" capture="user" style="display:none;" onchange="handleProfilePhotoSelect(event)">
 
   <div id="credentialsModal" class="modal-overlay">
     <div class="modal-box">
@@ -276,7 +231,7 @@
       <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none;" onchange="handleMediaSelect(event)">
       <div class="field field-spacing">
         <label>Caption</label>
-        <textarea id="post-caption" placeholder="Share your update with campus" rows="4"></textarea>
+        <textarea id="post-caption" placeholder="Share your update" rows="4"></textarea>
       </div>
       <button class="modal-save-btn" onclick="submitPost()">Publish Post</button>
     </div>
@@ -313,14 +268,22 @@
     </div>
   </div>
 
+  <div id="connectionsModal" class="modal-overlay">
+    <div class="modal-box connections-modal-box">
+      <div class="modal-head">
+        <h2 id="connectionsTitle">Connections</h2>
+        <button class="modal-close" onclick="closeConnectionsModal()">&times;</button>
+      </div>
+      <div class="connections-list" id="connectionsList">
+        <p class="connections-empty">Loading...</p>
+      </div>
+    </div>
+  </div>
+
   <div id="shareToast" class="toast"></div>
 
+  <script src="../js/common/auth-storage.js"></script>
   <script src="../js/pages/profile.js"></script>
   <script src="../js/common/message-badge.js"></script>
 </body>
 </html>
-
-
-
-
-

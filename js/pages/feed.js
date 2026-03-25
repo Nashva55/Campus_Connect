@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const API_BASE = "http://localhost:5000/api";
-  const token = localStorage.getItem("campusconnectToken");
-  const storedUser = JSON.parse(localStorage.getItem("campusconnectUser") || "null");
+  const token = window.CampusConnectAuth.getToken();
+  const storedUser = window.CampusConnectAuth.getUser();
 
   if (!token || !storedUser) {
     window.location.href = "login.html";
@@ -113,12 +113,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function updateTrendingSummary() {
     if (!posts.length) {
-      trendingSummary.textContent = "No trending posts yet.";
+      trendingSummary.textContent = "No activity yet.";
       return;
     }
 
     const topLiked = [...posts].sort((a, b) => b.likes - a.likes)[0];
-    trendingSummary.textContent = `${topLiked.authorName} is trending with ${topLiked.likes} likes.`;
+    trendingSummary.textContent = `${topLiked.authorName} · ${topLiked.likes} likes`;
   }
 
   function getFilteredPosts() {
@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       savedList.innerHTML = `
         <div class="feed-empty compact-empty">
           <h3>No saved posts yet</h3>
-          <p>Save posts to revisit internships, events, or useful updates later.</p>
+          <p>Saved posts will appear here.</p>
         </div>`;
       return;
     }
@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       suggestionList.innerHTML = `
         <div class="feed-empty compact-empty">
           <h3>No suggestions right now</h3>
-          <p>Follow more students to expand your network.</p>
+          <p>Suggestions will appear here.</p>
         </div>`;
       return;
     }
@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       feedPosts.innerHTML = `
         <div class="feed-empty">
           <h3>No posts in this view</h3>
-          <p>Try another filter, follow more students, or create a new post.</p>
+          <p>Try another filter or create a post.</p>
         </div>`;
       return;
     }
@@ -226,7 +226,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               <p>${escapeHTML(comment.text)}</p>
               <span>${formatTime(comment.createdAt)}</span>
             </div>`).join("")
-        : `<div class="feed-comment"><p>No comments yet. Start the conversation.</p></div>`;
+         : `<div class="feed-comment"><p>No comments yet.</p></div>`;
 
       return `
         <article class="feed-card" data-post-id="${post.id}">
@@ -574,3 +574,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateHeroStats();
   await loadFeedData();
 });
+
+

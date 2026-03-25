@@ -29,8 +29,8 @@
         <h1 id="profileName">Loading...</h1>
         <p id="profileEmail">Loading profile details...</p>
         <div class="user-profile-stats">
-          <span class="user-profile-stat"><strong id="followersCount">0</strong> Followers</span>
-          <span class="user-profile-stat"><strong id="followingCount">0</strong> Following</span>
+          <button class="user-profile-stat user-profile-stat-btn" id="followersTrigger" type="button"><strong id="followersCount">0</strong> Followers</button>
+          <button class="user-profile-stat user-profile-stat-btn" id="followingTrigger" type="button"><strong id="followingCount">0</strong> Following</button>
         </div>
       </div>
       <button class="user-profile-follow-btn" id="followButton" type="button">Follow</button>
@@ -50,9 +50,20 @@
     </section>
   </main>
 
+  <div id="connectionsModal" class="modal-overlay">
+    <div class="modal-box user-connections-modal-box">
+      <div class="modal-head">
+        <h2 id="connectionsTitle">Connections</h2>
+        <button class="modal-close" id="closeConnectionsModalBtn">&times;</button>
+      </div>
+      <div class="connections-list" id="connectionsList">
+        <p class="connections-empty">Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/common/auth-storage.js"></script>
   <script src="../js/pages/user-profile.js"></script>
   <script src="../js/common/message-badge.js"></script>
 </body>
 </html>
-
-

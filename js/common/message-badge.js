@@ -1,5 +1,5 @@
 (function () {
-  const token = localStorage.getItem("campusconnectToken");
+  const token = window.CampusConnectAuth.getToken();
   const navLink = document.querySelector('.nav-links a[href="message.html"]');
   const API_BASE_URL = "http://localhost:5000/api";
   const STORAGE_KEY = "campusconnectUnreadMessages";
@@ -52,10 +52,10 @@
 
       const data = await response.json();
       const totalUnread = (data.conversations || []).reduce((total, conversation) => total + (conversation.unreadCount || 0), 0);
-      localStorage.setItem(STORAGE_KEY, String(totalUnread));
+      sessionStorage.setItem(STORAGE_KEY, String(totalUnread));
       renderUnreadCount(totalUnread);
     } catch {
-      const cachedCount = Number(localStorage.getItem(STORAGE_KEY) || 0);
+      const cachedCount = Number(sessionStorage.getItem(STORAGE_KEY) || 0);
       renderUnreadCount(cachedCount);
     }
   }
@@ -66,7 +66,7 @@
     }
   });
 
-  renderUnreadCount(localStorage.getItem(STORAGE_KEY) || 0);
+  renderUnreadCount(sessionStorage.getItem(STORAGE_KEY) || 0);
   refreshUnreadCount();
   pollHandle = window.setInterval(refreshUnreadCount, 20000);
 
@@ -76,3 +76,4 @@
     }
   });
 })();
+

@@ -1,8 +1,8 @@
 const API_BASE_URL = "http://localhost:5000/api";
 const SOCKET_SERVER_URL = "http://localhost:5000";
 const UNREAD_STORAGE_KEY = "campusconnectUnreadMessages";
-const token = localStorage.getItem("campusconnectToken");
-const storedUser = JSON.parse(localStorage.getItem("campusconnectUser") || "null");
+const token = window.CampusConnectAuth.getToken();
+const storedUser = window.CampusConnectAuth.getUser();
 
 if (!token || !storedUser) {
   window.location.href = "login.html";
@@ -111,7 +111,7 @@ function getTotalUnread() {
 }
 
 function syncUnreadState() {
-  localStorage.setItem(UNREAD_STORAGE_KEY, String(getTotalUnread()));
+  sessionStorage.setItem(UNREAD_STORAGE_KEY, String(getTotalUnread()));
 }
 
 function getOrCreateToast() {
@@ -510,3 +510,4 @@ groupModal.addEventListener("click", (event) => {
     showEmptyState();
   }
 })();
+

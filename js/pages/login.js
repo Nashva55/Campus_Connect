@@ -145,9 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(data.message || "Login failed.");
       }
 
-      localStorage.setItem("campusconnectToken", data.token);
-      localStorage.setItem("campusconnectRole", data.role);
-      localStorage.setItem("campusconnectUser", JSON.stringify(data.user));
+      window.CampusConnectAuth.setSession({ token: data.token, role: data.role, user: data.user });
 
       setStatusMessage("Login successful. Redirecting...", "success");
 
@@ -161,3 +159,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+

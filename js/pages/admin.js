@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordInput = document.getElementById("studentPassword");
   const togglePasswordButton = document.getElementById("toggleStudentPassword");
   const message = document.getElementById("adminMessage");
-  const token = localStorage.getItem("campusconnectToken");
-  const role = localStorage.getItem("campusconnectRole");
+  const token = window.CampusConnectAuth.getToken();
+  const role = window.CampusConnectAuth.getRole();
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   function setMessage(text, type = "error") {
@@ -82,9 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!response.ok) {
         if (response.status === 401 || response.status === 403) {
-          localStorage.removeItem("campusconnectToken");
-          localStorage.removeItem("campusconnectRole");
-          localStorage.removeItem("campusconnectUser");
+          window.CampusConnectAuth.clearSession();
           redirectToAdminLogin(data.message || "Admin session expired. Redirecting...");
           return;
         }
@@ -103,3 +101,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
