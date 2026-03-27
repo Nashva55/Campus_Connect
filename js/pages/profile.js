@@ -77,12 +77,16 @@ function syncProfileFromStorage() {
   const displayName = document.getElementById("display-name");
   const editName = document.getElementById("edit-name");
   const editEmail = document.getElementById("edit-email");
+  const displayEmail = document.getElementById("display-email");
   const avatarIcon = document.querySelector(".avatar-icon");
   const pickerPreview = document.getElementById("pickerPreview");
 
   displayName.innerText = storedUser.name || "Student Name";
   editName.value = storedUser.name || "";
   editEmail.value = storedUser.email || "";
+  if (displayEmail) {
+    displayEmail.textContent = storedUser.email || "student@campusconnect.com";
+  }
 
   if (avatarIcon) {
     avatarIcon.textContent = getInitials(storedUser.name);
@@ -114,7 +118,6 @@ function openModal() {
   editModal.style.display = "flex";
   document.getElementById("edit-name").value = document.getElementById("display-name").innerText;
   document.getElementById("edit-college").value = document.getElementById("display-college").innerText;
-  document.getElementById("edit-year").value = document.getElementById("display-year").innerText;
   document.getElementById("edit-email").value = storedUser.email || "";
 
   const pic = document.getElementById("profile-pic-display");
@@ -162,12 +165,14 @@ editForm.addEventListener("submit", function handleEditSubmit(event) {
 
   const updatedName = document.getElementById("edit-name").value.trim();
   const updatedCollege = document.getElementById("edit-college").value.trim();
-  const updatedYear = document.getElementById("edit-year").value.trim();
   const updatedEmail = document.getElementById("edit-email").value.trim();
 
   document.getElementById("display-name").innerText = updatedName;
   document.getElementById("display-college").innerText = updatedCollege;
-  document.getElementById("display-year").innerText = updatedYear;
+  const displayEmail = document.getElementById("display-email");
+  if (displayEmail) {
+    displayEmail.textContent = updatedEmail || "student@campusconnect.com";
+  }
 
   storedUser.name = updatedName;
   storedUser.email = updatedEmail;

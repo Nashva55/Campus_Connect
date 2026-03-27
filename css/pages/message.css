@@ -726,3 +726,11 @@ body {
   font-size: 0.78rem;
   font-weight: 600;
 }
+
+
+.resource-file-name {
+  color: var(--messages-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  word-break: break-word;
+}

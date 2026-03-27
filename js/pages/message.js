@@ -385,9 +385,10 @@ function renderMessages(messages) {
     if (message.type === "resource") {
       const resourceLabel = message.resourceKind === "file" ? "File" : "Resource";
       const resourceHref = message.resourceKind === "file" ? message.resourceFileData : message.resourceUrl;
-      const resourceText = message.resourceKind === "file"
-        ? (message.resourceFileName || message.resourceTitle)
-        : message.resourceTitle;
+      const resourceTitle = message.resourceTitle || message.resourceFileName || "Shared resource";
+      const resourceFileName = message.resourceKind === "file" && message.resourceFileName
+        ? `<span class="resource-file-name">${escapeHTML(message.resourceFileName)}</span>`
+        : "";
       const extraMeta = message.resourceKind === "file" && message.resourceFileSize
         ? `<span class="resource-meta">${escapeHTML(formatFileSize(message.resourceFileSize))}</span>`
         : "";
@@ -398,7 +399,8 @@ function renderMessages(messages) {
       messageBody = `
         <div class="resource-card">
           <span class="resource-tag">${resourceLabel}</span>
-          <a class="resource-link" href="${escapeHTML(resourceHref)}" target="_blank" rel="noopener noreferrer"${downloadAttr}>${escapeHTML(resourceText)}</a>
+          <a class="resource-link" href="${escapeHTML(resourceHref)}" target="_blank" rel="noopener noreferrer"${downloadAttr}>${escapeHTML(resourceTitle)}</a>
+          ${resourceFileName}
           ${extraMeta}
           ${message.text ? `<div class="message-text">${escapeHTML(message.text)}</div>` : ""}
         </div>`;
