@@ -5,6 +5,7 @@ const User = require("../models/User");
 const { verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
+const MAX_RESOURCE_FILE_SIZE = 2 * 1024 * 1024;
 
 async function buildConversationPayload(conversation, currentUserId) {
   const readEntry = (conversation.readState || []).find((entry) => String(entry.userId) === String(currentUserId));
@@ -221,19 +222,81 @@ router.post("/conversations/:id/messages", verifyToken, async (request, response
       return response.status(404).json({ message: "Conversation not found." });
     }
 
+    const type = String(request.body.type || "text").trim().toLowerCase();
     const text = String(request.body.text || "").trim();
-    if (!text) {
+    const resourceTitle = String(request.body.resourceTitle || "").trim();
+    const resourceUrl = String(request.body.resourceUrl || "").trim();
+    const resourceKind = String(request.body.resourceKind || (request.body.resourceFileData ? "file" : "link")).trim().toLowerCase();
+    const resourceFileName = String(request.body.resourceFileName || "").trim();
+    const resourceFileType = String(request.body.resourceFileType || "").trim();
+    const resourceFileData = String(request.body.resourceFileData || "").trim();
+    const resourceFileSize = Number(request.body.resourceFileSize || 0);
+
+    if (!["text", "resource"].includes(type)) {
+      return response.status(400).json({ message: "Message type is invalid." });
+    }
+
+    if (type === "text" && !text) {
       return response.status(400).json({ message: "Message text is required." });
+    }
+
+    if (type === "resource") {
+      if (!resourceTitle) {
+        return response.status(400).json({ message: "Resource title is required." });
+      }
+
+      if (!["link", "file"].includes(resourceKind)) {
+        return response.status(400).json({ message: "Resource type is invalid." });
+      }
+
+      if (resourceKind === "link") {
+        if (!resourceUrl) {
+          return response.status(400).json({ message: "Resource URL is required." });
+        }
+
+        try {
+          const parsedUrl = new URL(resourceUrl);
+          if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+            throw new Error("Invalid protocol");
+          }
+        } catch {
+          return response.status(400).json({ message: "Resource URL must be a valid http or https link." });
+        }
+      }
+
+      if (resourceKind === "file") {
+        if (!resourceFileName || !resourceFileData) {
+          return response.status(400).json({ message: "Select a file to share." });
+        }
+
+        if (!resourceFileData.startsWith("data:")) {
+          return response.status(400).json({ message: "Shared file data is invalid." });
+        }
+
+        if (!Number.isFinite(resourceFileSize) || resourceFileSize <= 0 || resourceFileSize > MAX_RESOURCE_FILE_SIZE) {
+          return response.status(400).json({ message: "File must be smaller than 2 MB." });
+        }
+      }
     }
 
     const message = await Message.create({
       conversationId: conversation._id,
       senderId: request.user._id,
       senderName: request.user.name,
-      text
+      type,
+      text,
+      resourceKind,
+      resourceTitle,
+      resourceUrl,
+      resourceFileName,
+      resourceFileType,
+      resourceFileData,
+      resourceFileSize
     });
 
-    conversation.lastMessageText = text;
+    conversation.lastMessageText = type === "resource"
+      ? `${resourceKind === "file" ? "Shared file" : "Shared resource"}: ${resourceTitle}`
+      : text;
     conversation.lastMessageSenderName = request.user.name;
     conversation.lastMessageAt = message.createdAt;
     ensureReadState(conversation, request.user._id, message.createdAt);

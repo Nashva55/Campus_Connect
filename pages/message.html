@@ -90,6 +90,7 @@
 
           <form class="composer-bar" id="messageForm">
             <div class="composer-input-wrap">
+              <button type="button" class="composer-plus-btn" id="openResourceModalBtn" aria-label="Share resource">+</button>
               <input type="text" id="messageInput" placeholder="Message">
             </div>
             <button type="submit" class="send-btn">Send</button>
@@ -115,6 +116,35 @@
           <div class="member-picker" id="groupMemberList"></div>
         </div>
         <button type="submit" class="primary-btn modal-submit">Create Group</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="resourceModal">
+    <div class="modal-box group-modal-box">
+      <div class="modal-head">
+        <h2>Share Resource</h2>
+        <button class="modal-close" id="closeResourceModalBtn">&times;</button>
+      </div>
+      <form id="resourceForm">
+        <div class="field">
+          <label>Resource Title</label>
+          <input type="text" id="resourceTitle" placeholder="React roadmap" required>
+        </div>
+        <div class="field">
+          <label>Resource Link</label>
+          <input type="url" id="resourceUrl" placeholder="https://example.com/resource">
+        </div>
+        <div class="field">
+          <label>Upload File</label>
+          <input type="file" id="resourceFile">
+          <p class="field-note">Choose a link or upload a file up to 2 MB.</p>
+        </div>
+        <div class="field">
+          <label>Note</label>
+          <input type="text" id="resourceNote" placeholder="Useful for frontend interview prep">
+        </div>
+        <button type="submit" class="primary-btn modal-submit">Share Resource</button>
       </form>
     </div>
   </div>

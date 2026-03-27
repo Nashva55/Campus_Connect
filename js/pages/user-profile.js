@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const profileAvatar = document.getElementById("profileAvatar");
   const profileName = document.getElementById("profileName");
-  const profileEmail = document.getElementById("profileEmail");
   const followersCount = document.getElementById("followersCount");
   const followingCount = document.getElementById("followingCount");
   const followersTrigger = document.getElementById("followersTrigger");
@@ -50,6 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       .map((part) => part[0].toUpperCase())
       .join("") || "SN";
   }
+
 
   function formatTime(date) {
     const parsedDate = new Date(date);
@@ -117,7 +117,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     profileAvatar.textContent = getInitials(data.user.name);
     profileName.textContent = data.user.name;
-    profileEmail.textContent = data.user.email;
     renderFollowState(data.user);
     renderPosts(data.posts);
   }
@@ -149,7 +148,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="connection-avatar">${escapeHTML(getInitials(user.name))}</div>
           <div class="connection-copy">
             <strong>${escapeHTML(user.name)}</strong>
-            <span>${escapeHTML(user.email)}</span>
           </div>
         </a>`).join("");
     } catch (error) {
@@ -212,3 +210,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     followButton.style.display = "none";
   }
 });
+

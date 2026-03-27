@@ -419,6 +419,37 @@ body {
   word-break: break-word;
 }
 
+.resource-card {
+  display: grid;
+  gap: 8px;
+}
+
+.resource-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: inherit;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.resource-link {
+  color: #cfe0ff;
+  font-weight: 700;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.resource-link:hover {
+  text-decoration: underline;
+}
+
 .message-meta {
   display: block;
   margin-top: 7px;
@@ -438,6 +469,27 @@ body {
 
 .composer-input-wrap {
   position: relative;
+}
+
+.composer-plus-btn {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(134, 154, 255, 0.16);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #dce5ff;
+  font: inherit;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.composer-input-wrap input {
+  padding-left: 52px;
 }
 
 .send-btn,
@@ -659,4 +711,18 @@ body {
 .message-toast.show {
   opacity: 1;
   transform: translateY(0);
+}
+
+
+.field-note {
+  margin: 8px 2px 0;
+  color: var(--messages-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.resource-meta {
+  color: var(--messages-muted-strong);
+  font-size: 0.78rem;
+  font-weight: 600;
 }

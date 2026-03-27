@@ -13,9 +13,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const savedList = document.getElementById("savedList");
   const feedFilters = document.getElementById("feedFilters");
   const feedSort = document.getElementById("feedSort");
-  const heroFollowingCount = document.getElementById("heroFollowingCount");
-  const heroSavedCount = document.getElementById("heroSavedCount");
-  const trendingSummary = document.getElementById("trendingSummary");
+  const studentSearch = document.getElementById("studentSearch");
+  const clearStudentSearch = document.getElementById("clearStudentSearch");
+  const studentSearchMeta = document.getElementById("studentSearchMeta");
+  const searchResultsMeta = document.getElementById("searchResultsMeta");
+  const searchResults = document.getElementById("searchResults");
   const composerAvatar = document.getElementById("composerAvatar");
   const composerName = document.getElementById("composerName");
   const composerCaption = document.getElementById("composerCaption");
@@ -80,14 +82,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return parsedDate.toLocaleDateString();
   }
 
-  function openComposerModal() {
-    composerModal.style.display = "flex";
-  }
-
-  function closeComposerModal() {
-    composerModal.style.display = "none";
-  }
-
   async function apiRequest(path, options = {}) {
     const response = await fetch(`${API_BASE}${path}`, {
       ...options,
@@ -106,19 +100,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
-  function updateHeroStats() {
-    heroFollowingCount.textContent = String(followingIds.size);
-    heroSavedCount.textContent = String(savedPostIds.size);
+  function openComposerModal() {
+    composerModal.style.display = "flex";
   }
 
-  function updateTrendingSummary() {
-    if (!posts.length) {
-      trendingSummary.textContent = "No activity yet.";
-      return;
-    }
-
-    const topLiked = [...posts].sort((a, b) => b.likes - a.likes)[0];
-    trendingSummary.textContent = `${topLiked.authorName} · ${topLiked.likes} likes`;
+  function closeComposerModal() {
+    composerModal.style.display = "none";
   }
 
   function getFilteredPosts() {
@@ -146,6 +133,67 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     return filtered;
+  }
+
+  function getSearchMatches() {
+    const query = studentSearch.value.trim().toLowerCase();
+
+    if (!query) {
+      return [];
+    }
+
+    return suggestions
+      .filter((user) => user.name.toLowerCase().includes(query))
+      .sort((a, b) => Number(a.isFollowing) - Number(b.isFollowing) || b.followersCount - a.followersCount)
+      .slice(0, 8);
+  }
+
+  function renderStudentSearchResults() {
+    const query = studentSearch.value.trim();
+    const matches = getSearchMatches();
+
+    if (!query) {
+      studentSearchMeta.textContent = "Search for a student and open profile or chat.";
+      searchResultsMeta.textContent = "Type a name to search students.";
+      searchResults.innerHTML = `
+        <div class="feed-empty compact-empty">
+          <h3>No search yet</h3>
+          <p>Search results will appear here.</p>
+        </div>`;
+      return;
+    }
+
+    studentSearchMeta.textContent = matches.length
+      ? `${matches.length} student${matches.length === 1 ? "" : "s"} found`
+      : "No students found";
+    searchResultsMeta.textContent = `Results for "${query}"`;
+
+    if (!matches.length) {
+      searchResults.innerHTML = `
+        <div class="feed-empty compact-empty">
+          <h3>No matches</h3>
+          <p>Try another student name.</p>
+        </div>`;
+      return;
+    }
+
+    searchResults.innerHTML = matches.map((user) => `
+      <article class="search-result-card">
+        <div class="search-result-top">
+          <div class="suggestion-avatar">${escapeHTML(getInitials(user.name))}</div>
+          <div class="search-result-copy">
+            <strong>${escapeHTML(user.name)}</strong>
+            <p>${user.followersCount} followers</p>
+          </div>
+        </div>
+        <div class="search-result-actions">
+          <a class="search-action-link" href="user-profile.html?id=${encodeURIComponent(user.id)}">Profile</a>
+          <button class="search-action-btn" data-search-action="message" data-user-id="${user.id}">Message</button>
+          <button class="follow-btn ${user.isFollowing ? "is-following" : ""}" data-follow-action="toggle" data-user-id="${user.id}">
+            ${user.isFollowing ? "Following" : "Follow"}
+          </button>
+        </div>
+      </article>`).join("");
   }
 
   function renderSavedPosts() {
@@ -187,13 +235,15 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="suggestion-avatar">${escapeHTML(getInitials(user.name))}</div>
           <div class="suggestion-copy">
             <strong>${escapeHTML(user.name)}</strong>
-            <p>${escapeHTML(user.email)}</p>
             <p>${user.followersCount} followers</p>
           </div>
         </div>
-        <button class="follow-btn ${user.isFollowing ? "is-following" : ""}" data-user-id="${user.id}" data-follow-action="toggle">
-          ${user.isFollowing ? "Following" : "Follow"}
-        </button>
+        <div class="suggestion-actions">
+          <a class="search-action-link" href="user-profile.html?id=${encodeURIComponent(user.id)}">Profile</a>
+          <button class="follow-btn ${user.isFollowing ? "is-following" : ""}" data-user-id="${user.id}" data-follow-action="toggle">
+            ${user.isFollowing ? "Following" : "Follow"}
+          </button>
+        </div>
       </article>`).join("");
   }
 
@@ -226,7 +276,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               <p>${escapeHTML(comment.text)}</p>
               <span>${formatTime(comment.createdAt)}</span>
             </div>`).join("")
-         : `<div class="feed-comment"><p>No comments yet.</p></div>`;
+        : `<div class="feed-comment"><p>No comments yet.</p></div>`;
 
       return `
         <article class="feed-card" data-post-id="${post.id}">
@@ -239,7 +289,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </a>
                 <div class="feed-author">
                   <strong><a class="feed-author-link" href="user-profile.html?id=${encodeURIComponent(post.userId)}">${escapeHTML(post.authorName)}</a></strong>
-                  <span class="feed-meta">${escapeHTML(post.authorEmail)} · ${formatTime(post.createdAt)}</span>
+                  <span class="feed-meta">${formatTime(post.createdAt)}</span>
                 </div>
               </div>
               <span class="feed-pill">${followingIds.has(String(post.userId)) ? "Following" : "Campus"}</span>
@@ -251,12 +301,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               <span>${post.shareCount || 0} shares</span>
             </div>
             <div class="feed-actions">
-              <button class="feed-button ${post.liked ? "is-liked" : ""}" data-action="like" data-post-id="${post.id}">
-                ${post.liked ? "Liked" : "Like"}
-              </button>
-              <button class="feed-button ${savedPostIds.has(String(post.id)) ? "is-saved" : ""}" data-action="save" data-post-id="${post.id}">
-                ${savedPostIds.has(String(post.id)) ? "Saved" : "Save"}
-              </button>
+              <button class="feed-button ${post.liked ? "is-liked" : ""}" data-action="like" data-post-id="${post.id}">${post.liked ? "Liked" : "Like"}</button>
+              <button class="feed-button ${savedPostIds.has(String(post.id)) ? "is-saved" : ""}" data-action="save" data-post-id="${post.id}">${savedPostIds.has(String(post.id)) ? "Saved" : "Save"}</button>
               <button class="feed-button" data-action="share" data-post-id="${post.id}">Share</button>
               ${showToggle ? `<button class="comment-toggle-btn" data-action="comments" data-post-id="${post.id}">View all comments</button>` : ""}
               ${String(post.userId) === String(storedUser.id) ? `<button class="follow-btn-inline" data-action="delete" data-post-id="${post.id}">Delete</button>` : ""}
@@ -290,23 +336,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         isFollowing: followingIds.has(String(user.id))
       }));
 
-      updateHeroStats();
-      updateTrendingSummary();
       renderSuggestions();
       renderSavedPosts();
+      renderStudentSearchResults();
       renderPosts();
     } catch (error) {
-      feedPosts.innerHTML = `
-        <div class="feed-empty">
-          <h3>Unable to load feed</h3>
-          <p>${escapeHTML(error.message)}</p>
-        </div>`;
-      suggestionList.innerHTML = `
-        <div class="feed-empty compact-empty">
-          <h3>Unable to load suggestions</h3>
-          <p>${escapeHTML(error.message)}</p>
-        </div>`;
+      feedPosts.innerHTML = `<div class="feed-empty"><h3>Unable to load feed</h3><p>${escapeHTML(error.message)}</p></div>`;
+      suggestionList.innerHTML = `<div class="feed-empty compact-empty"><h3>Unable to load suggestions</h3><p>${escapeHTML(error.message)}</p></div>`;
+      searchResults.innerHTML = `<div class="feed-empty compact-empty"><h3>Search unavailable</h3><p>${escapeHTML(error.message)}</p></div>`;
     }
+  }
+
+  function resetComposerMedia() {
+    composerMediaDataURL = "";
+    composerMediaType = "";
+    composerMediaInput.value = "";
+    composerPreview.style.display = "none";
+    composerPreviewImage.src = "";
+    composerPreviewVideo.src = "";
+    composerPreviewImage.style.display = "none";
+    composerPreviewVideo.style.display = "none";
   }
 
   async function handleComposerMedia(event) {
@@ -335,17 +384,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     reader.readAsDataURL(file);
   }
 
-  function resetComposerMedia() {
-    composerMediaDataURL = "";
-    composerMediaType = "";
-    composerMediaInput.value = "";
-    composerPreview.style.display = "none";
-    composerPreviewImage.src = "";
-    composerPreviewVideo.src = "";
-    composerPreviewImage.style.display = "none";
-    composerPreviewVideo.style.display = "none";
-  }
-
   async function submitComposerPost() {
     const caption = composerCaption.value.trim();
 
@@ -372,7 +410,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       composerCaption.value = "";
       resetComposerMedia();
       closeComposerModal();
-      updateTrendingSummary();
+      renderSavedPosts();
       renderPosts();
     } catch (error) {
       alert(error.message || "Unable to create post.");
@@ -392,8 +430,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       : { ...user, isFollowing: followingIds.has(String(user.id)) }
     );
 
-    updateHeroStats();
     renderSuggestions();
+    renderStudentSearchResults();
     renderPosts();
   }
 
@@ -405,7 +443,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     persistSavedPostIds();
-    updateHeroStats();
     renderSavedPosts();
     renderPosts();
   }
@@ -416,7 +453,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     posts = posts.map((post) => post.id === postId ? data.post : post);
-    updateTrendingSummary();
     renderPosts();
   }
 
@@ -452,8 +488,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     posts = posts.filter((post) => post.id !== postId);
     savedPostIds.delete(String(postId));
     persistSavedPostIds();
-    updateHeroStats();
-    updateTrendingSummary();
     renderSavedPosts();
     renderPosts();
   }
@@ -482,6 +516,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     alert(comments);
   }
 
+  async function startDirectConversation(targetUserId) {
+    const data = await apiRequest("/messages/conversations/direct", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ targetUserId })
+    });
+
+    window.location.href = `message.html?conversation=${encodeURIComponent(data.conversation.id)}`;
+  }
+
+  async function handleStudentActionClick(event) {
+    const messageButton = event.target.closest('[data-search-action="message"]');
+    const followButton = event.target.closest('[data-follow-action="toggle"]');
+
+    try {
+      if (messageButton) {
+        await startDirectConversation(messageButton.dataset.userId);
+        return;
+      }
+
+      if (followButton) {
+        await toggleFollow(followButton.dataset.userId);
+      }
+    } catch (error) {
+      alert(error.message || "Unable to update this student action.");
+    }
+  }
+
   feedFilters.addEventListener("click", (event) => {
     const button = event.target.closest("[data-filter]");
     if (!button) return;
@@ -496,6 +560,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderPosts();
   });
 
+  studentSearch.addEventListener("input", renderStudentSearchResults);
+  clearStudentSearch.addEventListener("click", () => {
+    studentSearch.value = "";
+    renderStudentSearchResults();
+    studentSearch.focus();
+  });
+
   openComposerBtn.addEventListener("click", openComposerModal);
   closeComposerBtn.addEventListener("click", closeComposerModal);
   composerModal.addEventListener("click", (event) => {
@@ -508,20 +579,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   composerRemoveMediaBtn.addEventListener("click", resetComposerMedia);
   composerSubmitBtn.addEventListener("click", submitComposerPost);
 
-  suggestionList.addEventListener("click", async (event) => {
-    const followButton = event.target.closest("[data-follow-action='toggle']");
-    if (!followButton) return;
-
-    try {
-      await toggleFollow(followButton.dataset.userId);
-    } catch (error) {
-      alert(error.message || "Unable to update follow state.");
-    }
-  });
+  suggestionList.addEventListener("click", handleStudentActionClick);
+  searchResults.addEventListener("click", handleStudentActionClick);
 
   feedPosts.addEventListener("click", async (event) => {
-    const target = event.target;
-    const actionButton = target.closest("[data-action]");
+    const actionButton = event.target.closest("[data-action]");
 
     if (!actionButton) {
       return;
@@ -571,8 +633,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  updateHeroStats();
   await loadFeedData();
 });
-
-

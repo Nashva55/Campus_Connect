@@ -55,6 +55,7 @@ function getInitials(name) {
     .join("") || "SN";
 }
 
+
 function createAvatarMarkup(name, className = "post-card-avatar") {
   return `<div class="${className}">${escapeHTML(getInitials(name))}</div>`;
 }
@@ -74,14 +75,12 @@ function syncFollowStats(user = storedUser) {
 
 function syncProfileFromStorage() {
   const displayName = document.getElementById("display-name");
-  const displayEmail = document.getElementById("display-email");
   const editName = document.getElementById("edit-name");
   const editEmail = document.getElementById("edit-email");
   const avatarIcon = document.querySelector(".avatar-icon");
   const pickerPreview = document.getElementById("pickerPreview");
 
   displayName.innerText = storedUser.name || "Student Name";
-  displayEmail.innerText = storedUser.email || "student@college.edu";
   editName.value = storedUser.name || "";
   editEmail.value = storedUser.email || "";
 
@@ -116,7 +115,7 @@ function openModal() {
   document.getElementById("edit-name").value = document.getElementById("display-name").innerText;
   document.getElementById("edit-college").value = document.getElementById("display-college").innerText;
   document.getElementById("edit-year").value = document.getElementById("display-year").innerText;
-  document.getElementById("edit-email").value = document.getElementById("display-email").innerText;
+  document.getElementById("edit-email").value = storedUser.email || "";
 
   const pic = document.getElementById("profile-pic-display");
   const preview = document.getElementById("pickerPreview");
@@ -169,7 +168,6 @@ editForm.addEventListener("submit", function handleEditSubmit(event) {
   document.getElementById("display-name").innerText = updatedName;
   document.getElementById("display-college").innerText = updatedCollege;
   document.getElementById("display-year").innerText = updatedYear;
-  document.getElementById("display-email").innerText = updatedEmail;
 
   storedUser.name = updatedName;
   storedUser.email = updatedEmail;
@@ -588,7 +586,6 @@ async function openConnectionsModal(type) {
         <div class="connection-avatar">${escapeHTML(getInitials(user.name))}</div>
         <div class="connection-copy">
           <strong>${escapeHTML(user.name)}</strong>
-          <span>${escapeHTML(user.email)}</span>
         </div>
       </a>`).join("");
   } catch (error) {
@@ -675,3 +672,4 @@ window.closeConnectionsModal = closeConnectionsModal;
 syncProfileFromStorage();
 loadOwnProfileStats();
 loadPosts();
+

@@ -3,6 +3,7 @@ const SOCKET_SERVER_URL = "http://localhost:5000";
 const UNREAD_STORAGE_KEY = "campusconnectUnreadMessages";
 const token = window.CampusConnectAuth.getToken();
 const storedUser = window.CampusConnectAuth.getUser();
+const initialConversationId = new URLSearchParams(window.location.search).get("conversation");
 
 if (!token || !storedUser) {
   window.location.href = "login.html";
@@ -22,6 +23,7 @@ const activeChatMeta = document.getElementById("activeChatMeta");
 const messageStream = document.getElementById("messageStream");
 const messageForm = document.getElementById("messageForm");
 const messageInput = document.getElementById("messageInput");
+const openResourceModalBtn = document.getElementById("openResourceModalBtn");
 const refreshChatsBtn = document.getElementById("refreshChatsBtn");
 const openGroupModalBtn = document.getElementById("openGroupModalBtn");
 const groupModal = document.getElementById("groupModal");
@@ -29,6 +31,13 @@ const closeGroupModalBtn = document.getElementById("closeGroupModalBtn");
 const groupForm = document.getElementById("groupForm");
 const groupNameInput = document.getElementById("groupName");
 const groupMemberList = document.getElementById("groupMemberList");
+const resourceModal = document.getElementById("resourceModal");
+const closeResourceModalBtn = document.getElementById("closeResourceModalBtn");
+const resourceForm = document.getElementById("resourceForm");
+const resourceTitleInput = document.getElementById("resourceTitle");
+const resourceUrlInput = document.getElementById("resourceUrl");
+const resourceNoteInput = document.getElementById("resourceNote");
+const resourceFileInput = document.getElementById("resourceFile");
 
 let conversations = [];
 let directoryUsers = [];
@@ -93,6 +102,33 @@ function formatTime(value) {
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
   return date.toLocaleDateString();
+}
+
+function formatFileSize(size) {
+  const value = Number(size || 0);
+
+  if (!value) {
+    return "";
+  }
+
+  if (value < 1024) {
+    return `${value} B`;
+  }
+
+  if (value < 1024 * 1024) {
+    return `${(value / 1024).toFixed(1)} KB`;
+  }
+
+  return `${(value / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function readFileAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Unable to read the selected file."));
+    reader.readAsDataURL(file);
+  });
 }
 
 function normalizeIncomingMessage(message) {
@@ -207,12 +243,17 @@ function renderConversationList() {
 
 function renderDirectory() {
   const search = userSearch.value.trim().toLowerCase();
-  const filtered = directoryUsers.filter((user) => `${user.name} ${user.email}`.toLowerCase().includes(search));
+  const filtered = directoryUsers.filter((user) => user.name.toLowerCase().includes(search));
 
   userList.innerHTML = "";
 
+  if (!directoryUsers.length) {
+    userList.innerHTML = '<div class="sidebar-empty">No other student accounts are available yet.</div>';
+    return;
+  }
+
   if (!filtered.length) {
-    userList.innerHTML = '<div class="sidebar-empty">No matching users.</div>';
+    userList.innerHTML = '<div class="sidebar-empty">No matching students.</div>';
     return;
   }
 
@@ -225,7 +266,6 @@ function renderDirectory() {
         <div class="entity-avatar">${escapeHTML(getInitials(user.name))}</div>
         <div class="entity-copy">
           <strong>${escapeHTML(user.name)}</strong>
-          <span>${escapeHTML(user.email)}</span>
         </div>
       </div>
       <div class="user-card-action">Start direct chat</div>`;
@@ -238,7 +278,7 @@ function renderGroupMemberOptions() {
   groupMemberList.innerHTML = "";
 
   if (!directoryUsers.length) {
-    groupMemberList.innerHTML = '<div class="sidebar-empty">No members available.</div>';
+    groupMemberList.innerHTML = '<div class="sidebar-empty">Create another student account to start direct or group chats.</div>';
     return;
   }
 
@@ -250,7 +290,6 @@ function renderGroupMemberOptions() {
       <div class="entity-avatar">${escapeHTML(getInitials(user.name))}</div>
       <div class="member-option-copy">
         <strong>${escapeHTML(user.name)}</strong>
-        <span>${escapeHTML(user.email)}</span>
       </div>`;
     groupMemberList.appendChild(label);
   });
@@ -340,9 +379,34 @@ function renderMessages(messages) {
   messages.forEach((message) => {
     const bubble = document.createElement("article");
     bubble.className = `message-bubble${message.isOwn ? " own" : ""}`;
+
+    let messageBody = `<div class="message-text">${escapeHTML(message.text)}</div>`;
+
+    if (message.type === "resource") {
+      const resourceLabel = message.resourceKind === "file" ? "File" : "Resource";
+      const resourceHref = message.resourceKind === "file" ? message.resourceFileData : message.resourceUrl;
+      const resourceText = message.resourceKind === "file"
+        ? (message.resourceFileName || message.resourceTitle)
+        : message.resourceTitle;
+      const extraMeta = message.resourceKind === "file" && message.resourceFileSize
+        ? `<span class="resource-meta">${escapeHTML(formatFileSize(message.resourceFileSize))}</span>`
+        : "";
+      const downloadAttr = message.resourceKind === "file" && message.resourceFileName
+        ? ` download="${escapeHTML(message.resourceFileName)}"`
+        : "";
+
+      messageBody = `
+        <div class="resource-card">
+          <span class="resource-tag">${resourceLabel}</span>
+          <a class="resource-link" href="${escapeHTML(resourceHref)}" target="_blank" rel="noopener noreferrer"${downloadAttr}>${escapeHTML(resourceText)}</a>
+          ${extraMeta}
+          ${message.text ? `<div class="message-text">${escapeHTML(message.text)}</div>` : ""}
+        </div>`;
+    }
+
     bubble.innerHTML = `
       ${message.isOwn ? "" : `<span class="message-author">${escapeHTML(message.senderName)}</span>`}
-      <div class="message-text">${escapeHTML(message.text)}</div>
+      ${messageBody}
       <span class="message-meta">${escapeHTML(formatTime(message.createdAt))}</span>`;
     messageStream.appendChild(bubble);
   });
@@ -415,6 +479,23 @@ function closeGroupModal() {
   groupForm.reset();
 }
 
+function openResourceModal() {
+  if (!activeConversationId) {
+    alert("Open a conversation first.");
+    return;
+  }
+
+  resourceModal.style.display = "flex";
+}
+
+function closeResourceModal() {
+  resourceModal.style.display = "none";
+  resourceForm.reset();
+  if (resourceUrlInput) {
+    resourceUrlInput.required = false;
+  }
+}
+
 async function handleGroupSubmit(event) {
   event.preventDefault();
 
@@ -433,6 +514,65 @@ async function handleGroupSubmit(event) {
     await openConversation(data.conversation.id);
   } catch (error) {
     alert(error.message || "Unable to create group chat.");
+  }
+}
+
+async function handleResourceSubmit(event) {
+  event.preventDefault();
+
+  if (!activeConversationId) {
+    return;
+  }
+
+  const resourceTitle = resourceTitleInput.value.trim();
+  const resourceUrl = resourceUrlInput.value.trim();
+  const text = resourceNoteInput.value.trim();
+  const selectedFile = resourceFileInput?.files?.[0] || null;
+
+  if (!resourceTitle) {
+    alert("Enter a resource title.");
+    return;
+  }
+
+  if (!resourceUrl && !selectedFile) {
+    alert("Add a link or choose a file to share.");
+    return;
+  }
+
+  if (selectedFile && selectedFile.size > 2 * 1024 * 1024) {
+    alert("Choose a file smaller than 2 MB.");
+    return;
+  }
+
+  try {
+    const payload = {
+      type: "resource",
+      resourceTitle,
+      text
+    };
+
+    if (selectedFile) {
+      payload.resourceKind = "file";
+      payload.resourceFileName = selectedFile.name;
+      payload.resourceFileType = selectedFile.type || "application/octet-stream";
+      payload.resourceFileSize = selectedFile.size;
+      payload.resourceFileData = await readFileAsDataURL(selectedFile);
+    } else {
+      payload.resourceKind = "link";
+      payload.resourceUrl = resourceUrl;
+    }
+
+    const data = await apiRequest(`/messages/conversations/${activeConversationId}/messages`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(payload)
+    });
+
+    upsertConversation(data.conversation);
+    appendIncomingMessage(data.chatMessage);
+    closeResourceModal();
+  } catch (error) {
+    alert(error.message || "Unable to share resource.");
   }
 }
 
@@ -488,18 +628,36 @@ refreshChatsBtn.addEventListener("click", async () => {
 openGroupModalBtn.addEventListener("click", openGroupModal);
 closeGroupModalBtn.addEventListener("click", closeGroupModal);
 groupForm.addEventListener("submit", handleGroupSubmit);
+if (openResourceModalBtn) {
+  openResourceModalBtn.addEventListener("click", openResourceModal);
+}
+if (closeResourceModalBtn) {
+  closeResourceModalBtn.addEventListener("click", closeResourceModal);
+}
+if (resourceForm) {
+  resourceForm.addEventListener("submit", handleResourceSubmit);
+}
 groupModal.addEventListener("click", (event) => {
   if (event.target === groupModal) {
     closeGroupModal();
   }
 });
+if (resourceModal) {
+  resourceModal.addEventListener("click", (event) => {
+    if (event.target === resourceModal) {
+      closeResourceModal();
+    }
+  });
+}
 
 (async function initMessagesPage() {
   try {
     connectSocket();
     await Promise.all([loadConversations(), loadDirectory()]);
 
-    if (conversations.length) {
+    if (initialConversationId) {
+      await openConversation(initialConversationId);
+    } else if (conversations.length) {
       await openConversation(conversations[0].id);
     } else {
       showEmptyState();
@@ -510,4 +668,3 @@ groupModal.addEventListener("click", (event) => {
     showEmptyState();
   }
 })();
-

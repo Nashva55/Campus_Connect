@@ -17,10 +17,48 @@ const messageSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
+    type: {
+      type: String,
+      enum: ["text", "resource"],
+      default: "text"
+    },
     text: {
       type: String,
-      required: true,
-      trim: true
+      trim: true,
+      default: ""
+    },
+    resourceKind: {
+      type: String,
+      enum: ["link", "file"],
+      default: "link"
+    },
+    resourceTitle: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    resourceUrl: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    resourceFileName: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    resourceFileType: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    resourceFileData: {
+      type: String,
+      default: ""
+    },
+    resourceFileSize: {
+      type: Number,
+      default: 0
     }
   },
   {
@@ -34,7 +72,15 @@ messageSchema.methods.toClientObject = function toClientObject(currentUserId) {
     conversationId: this.conversationId,
     senderId: this.senderId,
     senderName: this.senderName,
+    type: this.type,
     text: this.text,
+    resourceKind: this.resourceKind,
+    resourceTitle: this.resourceTitle,
+    resourceUrl: this.resourceUrl,
+    resourceFileName: this.resourceFileName,
+    resourceFileType: this.resourceFileType,
+    resourceFileData: this.resourceFileData,
+    resourceFileSize: this.resourceFileSize,
     createdAt: this.createdAt,
     isOwn: String(this.senderId) === String(currentUserId)
   };

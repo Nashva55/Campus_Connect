@@ -69,15 +69,13 @@ body {
   text-transform: uppercase;
 }
 
-.feed-filters,
-.feed-stat-pills {
+.feed-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
 .filter-chip,
-.feed-stat-pill,
 .feed-pill {
   display: inline-flex;
   align-items: center;
@@ -103,10 +101,6 @@ body {
   background: rgba(139, 92, 246, 0.12);
 }
 
-.feed-stat-pill strong {
-  margin-left: 8px;
-  color: #fff;
-}
 
 .sort-wrap {
   display: flex;
@@ -142,40 +136,16 @@ body {
   box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
 }
 
-.feed-highlights-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-}
 
-.highlight-card {
-  padding: 24px;
-}
 
-.highlight-card-accent {
-  background:
-    radial-gradient(circle at top right, rgba(139, 92, 246, 0.2), transparent 32%),
-    linear-gradient(180deg, rgba(16, 23, 40, 0.96), rgba(10, 15, 28, 0.98));
-}
 
-.highlight-kicker {
-  display: inline-block;
-  margin-bottom: 10px;
-  color: #a5b4fc;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
 
-.highlight-card h3,
 .side-card h2,
 .feed-empty h3 {
   margin: 0;
   font-family: "Sora", sans-serif;
 }
 
-.highlight-card p,
 .feed-empty p,
 .saved-item span,
 .suggestion-copy p,
@@ -184,21 +154,7 @@ body {
   line-height: 1.7;
 }
 
-.highlight-meta {
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(148, 163, 255, 0.1);
-  color: #dbe4ff;
-  font-weight: 600;
-}
 
-.highlight-list {
-  margin: 16px 0 0;
-  padding-left: 18px;
-  color: #cfd8ee;
-  display: grid;
-  gap: 10px;
-}
 
 .feed-stream,
 .suggestion-list,
@@ -597,7 +553,6 @@ body {
     align-items: flex-start;
   }
 
-  .feed-highlights-grid,
   .feed-side-column {
     grid-template-columns: 1fr;
   }
@@ -613,7 +568,6 @@ body {
 
 @media (max-width: 560px) {
   .feed-toolbar,
-  .highlight-card,
   .side-card,
   .feed-card-body,
   .composer-modal-box {
@@ -628,6 +582,143 @@ body {
   }
 
   .composer-modal-box {
+    width: 100%;
+  }
+}
+
+.student-search-wrap {
+  display: grid;
+  gap: 10px;
+  min-width: min(100%, 360px);
+}
+
+.search-label {
+  color: #9aa7cb;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.student-search-bar {
+  display: flex;
+  gap: 10px;
+}
+
+.student-search-input {
+  flex: 1;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 255, 0.14);
+  background: rgba(6, 10, 20, 0.8);
+  color: #eef2ff;
+  outline: none;
+}
+
+.student-search-input:focus {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+}
+
+.student-search-clear,
+.search-action-btn,
+.search-action-link {
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 255, 0.16);
+  background: rgba(255, 255, 255, 0.03);
+  color: #dce4ff;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.student-search-clear:hover,
+.search-action-btn:hover,
+.search-action-link:hover {
+  transform: translateY(-1px);
+  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.search-result-copy,
+.search-results-meta {
+  margin: 0;
+  color: #9aa7cb;
+  line-height: 1.6;
+}
+
+.search-results-list {
+  display: grid;
+  gap: 14px;
+}
+
+.search-result-card {
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  display: grid;
+  gap: 14px;
+}
+
+.search-result-top,
+.suggestion-actions,
+.search-result-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-result-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.search-result-copy strong {
+  color: #eef2ff;
+}
+
+.search-result-copy p {
+  margin: 0;
+  color: #9aa7cb;
+  font-size: 0.9rem;
+}
+
+.search-result-actions .follow-btn,
+.suggestion-actions .follow-btn {
+  min-width: 104px;
+}
+
+.search-side-card {
+  gap: 16px;
+}
+
+@media (max-width: 820px) {
+  .student-search-wrap {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .student-search-bar,
+  .search-result-top,
+  .suggestion-actions,
+  .search-result-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .student-search-clear,
+  .search-action-btn,
+  .search-action-link,
+  .search-result-actions .follow-btn,
+  .suggestion-actions .follow-btn {
     width: 100%;
   }
 }
