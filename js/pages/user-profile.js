@@ -2,6 +2,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const token = window.CampusConnectAuth.getToken();
   const storedUser = window.CampusConnectAuth.getUser();
   const params = new URLSearchParams(window.location.search);
+  const BACKEND_HOST = window.location.hostname || "localhost";
+  const BACKEND_PROTOCOL = window.location.protocol === "https:" ? "https:" : "http:";
+  const API_BASE_URL = `${BACKEND_PROTOCOL}//${BACKEND_HOST}:5000/api`;
   const userId = params.get("id");
 
   const profileAvatar = document.getElementById("profileAvatar");
@@ -109,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function loadProfile() {
-    const response = await fetch(`http://localhost:5000/api/users/${userId}/profile`, {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}/profile`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -133,7 +136,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     connectionsList.innerHTML = '<p class="connections-empty">Loading...</p>';
 
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${userId}/connections?type=${type}`, {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}/connections?type=${type}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -169,7 +172,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       followButton.disabled = true;
 
-      const response = await fetch(`http://localhost:5000/api/users/${userId}/follow`, {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}/follow`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`

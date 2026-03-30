@@ -1,78 +1,268 @@
-.domain-container {
-  max-width: 1000px;
-  margin: 90px auto 40px;
-  padding: 0 20px;
+:root {
+  --domain-bg: #07101d;
+  --domain-surface: rgba(12, 19, 34, 0.94);
+  --domain-border: rgba(134, 154, 255, 0.14);
+  --domain-text: #eef4ff;
+  --domain-muted: #8c98b5;
+  --domain-accent: #8b5cf6;
+  --domain-accent-strong: #2563eb;
+  --nav-h: 60px;
 }
 
-.domain-container h2 {
-  font-size: 28px;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 10px;
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--domain-text);
+  background:
+    radial-gradient(circle at top left, rgba(139, 92, 246, 0.18), transparent 22%),
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 24%),
+    linear-gradient(180deg, #060b15 0%, #09111f 56%, #09121d 100%);
+  font-family: "Inter", sans-serif;
 }
 
-.domain-container p {
-  color: #d1d5db;
-  margin-bottom: 30px;
+.domain-shell {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: calc(var(--nav-h) + 26px) 0 64px;
 }
 
-.cards-grid {
+.surface-card,
+.domain-card {
+  border: 1px solid var(--domain-border);
+  background: linear-gradient(180deg, rgba(13, 20, 35, 0.95), rgba(8, 14, 26, 0.97));
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(18px);
+}
+
+.domain-hero {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: minmax(0, 1.2fr) 300px;
+  gap: 20px;
+  padding: 30px;
+  border-radius: 30px;
+}
+
+.domain-hero-copy {
+  display: grid;
+  gap: 18px;
+}
+
+.domain-eyebrow {
+  margin: 0;
+  color: #9aacd0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.domain-hero h1,
+.guide-card h2,
+.roadmap-overview h2,
+.domain-card h3 {
+  margin: 0;
+  font-family: "Sora", sans-serif;
+  letter-spacing: -0.05em;
+}
+
+.domain-hero h1 {
+  font-size: clamp(2.3rem, 4vw, 3.4rem);
+  max-width: 760px;
+}
+
+.domain-subtitle,
+.guide-list li,
+.domain-card p,
+.domain-card li,
+.overview-grid p {
+  color: var(--domain-muted);
+  line-height: 1.7;
+}
+
+.domain-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.domain-hero-panel,
+.domain-hero-stats {
+  display: grid;
+  gap: 14px;
+}
+
+.domain-stat {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(134, 154, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.domain-stat span,
+.domain-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.domain-stat span {
+  color: #9aacd0;
+}
+
+.domain-stat strong,
+.overview-grid strong {
+  display: block;
+  margin-top: 10px;
+  font-family: "Sora", sans-serif;
+  font-size: 1.02rem;
+}
+
+.domain-guide-grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  background: rgba(17,24,39,0.9);
-  padding: 20px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.08);
-  transition: all 0.2s ease;
-  color: #e5e7eb;
+.guide-card,
+.roadmap-overview {
+  padding: 24px;
+  border-radius: 26px;
 }
 
-.card:hover {
-  background: rgba(124,58,237,0.1);
-  transform: translateY(-2px);
-}
-
-.card h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  color: #fff;
-}
-
-.card ul {
+.guide-list {
+  margin: 18px 0 0;
   padding-left: 20px;
-  margin-bottom: 15px;
 }
 
-.card ul li {
-  font-size: 14px;
-  color: #d1d5db;
-  line-height: 1.4;
-  margin-bottom: 5px;
+.guide-pill-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
 }
 
-.btn {
-  text-decoration: none;
-  text-align: center;
-  padding: 8px 12px;
-  background-color: #7c3aed;
+.guide-pill-grid span,
+.overview-grid article {
+  padding: 10px 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(134, 154, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.guide-pill-grid span {
+  color: #d5def8;
+  font-size: 0.88rem;
+}
+
+.roadmap-overview {
+  margin-top: 20px;
+}
+
+.overview-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.overview-grid p {
+  margin: 10px 0 0;
+}
+
+.domain-grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.domain-card {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border-radius: 24px;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.domain-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(139, 92, 246, 0.28);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.3);
+}
+
+.domain-card-top {
+  display: grid;
+  gap: 12px;
+}
+
+.domain-tag {
+  padding: 6px 12px;
+  background: rgba(139, 92, 246, 0.14);
+  color: #e8ddff;
+}
+
+.domain-card ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.domain-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, var(--domain-accent), var(--domain-accent-strong));
   color: #fff;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: background 0.2s ease;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.24);
+  transition: transform 0.18s ease, filter 0.18s ease;
 }
 
-.btn:hover {
-  background-color: #5b21b6;
+.domain-btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(134, 154, 255, 0.14);
+  box-shadow: none;
 }
 
-@media (max-width: 600px) {
-  .cards-grid {
+.domain-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+
+@media (max-width: 1080px) {
+  .domain-hero,
+  .domain-guide-grid,
+  .overview-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .domain-shell {
+    width: calc(100% - 24px);
+    padding-top: calc(var(--nav-h) + 18px);
+  }
+
+  .domain-hero,
+  .guide-card,
+  .roadmap-overview,
+  .domain-card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .domain-hero-actions {
+    flex-direction: column;
   }
 }

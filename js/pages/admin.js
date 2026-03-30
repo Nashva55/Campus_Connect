@@ -65,7 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       setMessage("Creating student account...", "success");
 
-      const response = await fetch("http://localhost:5000/api/admin/create-user", {
+      const BACKEND_HOST = window.location.hostname || "localhost";
+      const BACKEND_PROTOCOL = window.location.protocol === "https:" ? "https:" : "http:";
+      const response = await fetch(`${BACKEND_PROTOCOL}//${BACKEND_HOST}:5000/api/admin/create-user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

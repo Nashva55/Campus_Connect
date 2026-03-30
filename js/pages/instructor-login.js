@@ -8,7 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginButton = document.getElementById("adminLoginButton");
   const togglePasswordButton = document.getElementById("toggleAdminPassword");
   const loginCard = document.getElementById("loginCard");
-  const API_BASE_URL = "http://localhost:5000/api";
+  const BACKEND_HOST = window.location.hostname || "localhost";
+  const BACKEND_PROTOCOL = window.location.protocol === "https:" ? "https:" : "http:";
+  const API_BASE_URL = `${BACKEND_PROTOCOL}//${BACKEND_HOST}:5000/api`;
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const existingRole = window.CampusConnectAuth.getRole();
   const existingToken = window.CampusConnectAuth.getToken();

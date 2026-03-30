@@ -4,13 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Internships | CampusConnect</title>
-
   <link rel="stylesheet" href="../css/common/common.css">
   <link rel="stylesheet" href="../css/pages/internship.css">
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
   <header class="topbar">
     <div class="logo">Campus<span>Connect</span></div>
     <nav class="nav-links">
@@ -23,63 +21,126 @@
     </nav>
   </header>
 
-  <main class="more-container">
-    <h2>Internships</h2>
+  <main class="internship-shell">
+    <section class="internship-hero surface-card">
+      <div>
+        <p class="internship-eyebrow">Opportunities</p>
+        <h1>Find internships that match your current stage.</h1>
+        <p class="internship-subtitle">Explore beginner-friendly and advanced roles, filter by experience level, and submit a simple application directly from CampusConnect.</p>
+      </div>
+      <div class="internship-hero-note">
+        <span>Application flow</span>
+        <strong>In-app and saved per student</strong>
+      </div>
+    </section>
 
-    <div class="filters">
-      <button class="filter-btn active" data-level="all">All</button>
-      <button class="filter-btn" data-level="beginner">Beginner (1st-2nd year)</button>
-      <button class="filter-btn" data-level="final">Final-Year / Experienced</button>
-    </div>
+    <section class="internship-toolbar surface-card">
+      <div class="filters">
+        <button class="filter-btn active" data-level="all">All</button>
+        <button class="filter-btn" data-level="beginner">Beginner (1st-2nd year)</button>
+        <button class="filter-btn" data-level="final">Final-Year / Experienced</button>
+      </div>
+      <p class="internship-toolbar-copy">Choose a level and apply with a short pitch about your interest.</p>
+    </section>
 
-    <div class="cards-grid">
-      <!-- Beginner Internships -->
-      <div class="card" data-level="beginner">
-        <h3>Frontend Development Intern</h3>
+    <section class="cards-grid">
+      <article class="card" data-level="beginner" data-role="Frontend Development Intern" data-company="TechCorp" data-duration="3 months" data-mode="Remote" data-compensation="Paid">
+        <div class="card-top">
+          <span class="card-badge">Beginner</span>
+          <h3>Frontend Development Intern</h3>
+        </div>
         <p>Company: TechCorp</p>
-        <p>Duration: 3 months | Remote | Paid</p>
-        <a href="#" class="apply-btn">Apply Now</a>
-      </div>
+        <p>Duration: 3 months</p>
+        <p>Mode: Remote</p>
+        <p>Compensation: Paid</p>
+        <button type="button" class="apply-btn">Apply Now</button>
+      </article>
 
-      <div class="card" data-level="beginner">
-        <h3>Marketing Intern</h3>
+      <article class="card" data-level="beginner" data-role="Marketing Intern" data-company="BrightMedia" data-duration="2 months" data-mode="Remote" data-compensation="Stipend: $200">
+        <div class="card-top">
+          <span class="card-badge">Beginner</span>
+          <h3>Marketing Intern</h3>
+        </div>
         <p>Company: BrightMedia</p>
-        <p>Duration: 2 months | Remote | Stipend: $200</p>
-        <a href="#" class="apply-btn">Apply Now</a>
-      </div>
+        <p>Duration: 2 months</p>
+        <p>Mode: Remote</p>
+        <p>Compensation: Stipend: $200</p>
+        <button type="button" class="apply-btn">Apply Now</button>
+      </article>
 
-      <!-- Final-Year Internships -->
-      <div class="card" data-level="final">
-        <h3>Data Analyst Intern</h3>
+      <article class="card" data-level="final" data-role="Data Analyst Intern" data-company="DataLabs" data-duration="6 months" data-mode="On-site" data-compensation="Paid">
+        <div class="card-top">
+          <span class="card-badge">Advanced</span>
+          <h3>Data Analyst Intern</h3>
+        </div>
         <p>Company: DataLabs</p>
-        <p>Duration: 6 months | On-site | Paid</p>
-        <a href="#" class="apply-btn">Apply Now</a>
-      </div>
+        <p>Duration: 6 months</p>
+        <p>Mode: On-site</p>
+        <p>Compensation: Paid</p>
+        <button type="button" class="apply-btn">Apply Now</button>
+      </article>
 
-      <div class="card" data-level="final">
-        <h3>Machine Learning Research Intern</h3>
+      <article class="card" data-level="final" data-role="Machine Learning Research Intern" data-company="AI Innovations" data-duration="6 months" data-mode="Remote" data-compensation="Paid">
+        <div class="card-top">
+          <span class="card-badge">Advanced</span>
+          <h3>Machine Learning Research Intern</h3>
+        </div>
         <p>Company: AI Innovations</p>
-        <p>Duration: 6 months | Remote | Paid</p>
-        <a href="#" class="apply-btn">Apply Now</a>
-      </div>
+        <p>Duration: 6 months</p>
+        <p>Mode: Remote</p>
+        <p>Compensation: Paid</p>
+        <button type="button" class="apply-btn">Apply Now</button>
+      </article>
 
-      <div class="card" data-level="final">
-        <h3>Backend Development Intern</h3>
+      <article class="card" data-level="final" data-role="Backend Development Intern" data-company="CloudSolutions" data-duration="4 months" data-mode="On-site" data-compensation="Paid">
+        <div class="card-top">
+          <span class="card-badge">Advanced</span>
+          <h3>Backend Development Intern</h3>
+        </div>
         <p>Company: CloudSolutions</p>
-        <p>Duration: 4 months | On-site | Paid</p>
-        <a href="#" class="apply-btn">Apply Now</a>
-      </div>
-    </div>
+        <p>Duration: 4 months</p>
+        <p>Mode: On-site</p>
+        <p>Compensation: Paid</p>
+        <button type="button" class="apply-btn">Apply Now</button>
+      </article>
+    </section>
   </main>
 
-  <script src="../js/pages/internship.js"></script>
+  <div class="modal-overlay" id="applicationModal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div>
+          <p class="internship-eyebrow">Application</p>
+          <h2 id="applicationTitle">Apply for Internship</h2>
+        </div>
+        <button class="modal-close" id="closeApplicationModalBtn" aria-label="Close">&times;</button>
+      </div>
+
+      <form id="applicationForm" class="application-form">
+        <div class="application-summary" id="applicationSummary"></div>
+
+        <div class="field">
+          <label for="applicantName">Name</label>
+          <input type="text" id="applicantName" required>
+        </div>
+
+        <div class="field">
+          <label for="applicantEmail">Email</label>
+          <input type="email" id="applicantEmail" required>
+        </div>
+
+        <div class="field">
+          <label for="applicationPitch">Why are you interested?</label>
+          <textarea id="applicationPitch" rows="5" placeholder="Briefly explain your interest, relevant skills, and why you fit this role." required></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Application</button>
+      </form>
+    </div>
+  </div>
+
   <script src="../js/common/auth-storage.js"></script>
+  <script src="../js/pages/internship.js"></script>
   <script src="../js/common/message-badge.js"></script>
 </body>
 </html>
-
-
-
-
-
-

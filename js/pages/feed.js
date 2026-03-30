@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const API_BASE = "http://localhost:5000/api";
+  const BACKEND_HOST = window.location.hostname || "localhost";
+  const BACKEND_PROTOCOL = window.location.protocol === "https:" ? "https:" : "http:";
+  const API_BASE = `${BACKEND_PROTOCOL}//${BACKEND_HOST}:5000/api`;
   const token = window.CampusConnectAuth.getToken();
   const storedUser = window.CampusConnectAuth.getUser();
 

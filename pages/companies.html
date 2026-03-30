@@ -4,13 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Companies & Roles | CampusConnect</title>
-
   <link rel="stylesheet" href="../css/common/common.css">
   <link rel="stylesheet" href="../css/pages/companies.css">
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
   <header class="topbar">
     <div class="logo">Campus<span>Connect</span></div>
     <nav class="nav-links">
@@ -24,10 +22,15 @@
   </header>
 
   <main class="companies-container">
-    <h2>Companies & Roles</h2>
+    <section class="companies-hero surface-card">
+      <div>
+        <p class="companies-eyebrow">Career Targets</p>
+        <h2>Explore companies, roles, and work styles.</h2>
+        <p class="companies-subtitle">Filter by company type, role area, and work mode. Open any card to see what that company is good for and which student profiles align well with it.</p>
+      </div>
+    </section>
 
-    <!-- Filters -->
-    <div class="filters">
+    <div class="filters surface-card">
       <select id="filter-company">
         <option value="all">All Companies</option>
         <option value="google">Google</option>
@@ -49,15 +52,11 @@
         <option value="all">All Locations</option>
         <option value="remote">Remote</option>
         <option value="onsite">On-site</option>
-        <option value="newyork">New York</option>
-        <option value="sanfran">San Francisco</option>
       </select>
     </div>
 
-    <!-- Company Cards -->
     <div class="company-grid" id="companyGrid">
-      <!-- Google Example -->
-      <a href="#" class="company-card" data-company="google" data-role="software" data-location="onsite">
+      <button type="button" class="company-card" data-company="google" data-role="software" data-location="onsite" data-summary="Leading tech company focused on search, AI, and cloud computing." data-focus="Strong fit for students targeting product engineering, frontend, backend, and AI-adjacent teams." data-hiring="Frontend Developer, Backend Developer, Data Scientist" data-prep="DSA, system basics, web projects, strong fundamentals.">
         <h3>Google</h3>
         <p>Leading tech company focused on search, AI, and cloud computing.</p>
         <div>
@@ -65,59 +64,79 @@
           <span class="role-tag">Backend Developer</span>
           <span class="role-tag">Data Scientist</span>
         </div>
-      </a>
+      </button>
 
-      <!-- Amazon Example -->
-      <a href="#" class="company-card" data-company="amazon" data-role="data" data-location="onsite">
+      <button type="button" class="company-card" data-company="amazon" data-role="data" data-location="onsite" data-summary="E-commerce and cloud giant offering diverse tech and analytics roles." data-focus="Good for students interested in data, cloud, operations scale, and product systems." data-hiring="Data Analyst, Machine Learning Engineer" data-prep="SQL, analytics, ownership mindset, structured problem solving.">
         <h3>Amazon</h3>
         <p>E-commerce and cloud giant offering diverse tech and analytics roles.</p>
         <div>
           <span class="role-tag">Data Analyst</span>
           <span class="role-tag">Machine Learning Engineer</span>
         </div>
-      </a>
+      </button>
 
-      <!-- Microsoft Example -->
-      <a href="#" class="company-card" data-company="microsoft" data-role="management" data-location="remote">
+      <button type="button" class="company-card" data-company="microsoft" data-role="management" data-location="remote" data-summary="Software and cloud services leader with roles in tech and product management." data-focus="Useful for students interested in product thinking, design systems, cloud, and platform teams." data-hiring="Product Manager, UX Designer" data-prep="Communication, product sense, design thinking, technical clarity.">
         <h3>Microsoft</h3>
         <p>Software and cloud services leader with roles in tech and product management.</p>
         <div>
           <span class="role-tag">Product Manager</span>
           <span class="role-tag">UX Designer</span>
         </div>
-      </a>
+      </button>
 
-      <!-- Startup Example -->
-      <a href="#" class="company-card" data-company="startup" data-role="design" data-location="onsite">
+      <button type="button" class="company-card" data-company="startup" data-role="design" data-location="onsite" data-summary="A fast-growing startup focusing on AI-powered solutions." data-focus="Great for students who like ownership, speed, experimentation, and cross-functional work." data-hiring="UI/UX Designer, Frontend Developer" data-prep="Portfolio, shipping mindset, adaptability, strong communication.">
         <h3>InnovateX Startup</h3>
         <p>A fast-growing startup focusing on AI-powered solutions.</p>
         <div>
           <span class="role-tag">UI/UX Designer</span>
           <span class="role-tag">Frontend Developer</span>
         </div>
-      </a>
+      </button>
 
-      <!-- Non-Tech Example -->
-      <a href="#" class="company-card" data-company="nontech" data-role="management" data-location="onsite">
+      <button type="button" class="company-card" data-company="nontech" data-role="management" data-location="onsite" data-summary="Non-tech consulting firm offering internships and full-time roles." data-focus="Useful for students targeting business analysis, operations, communication-heavy roles, and structured client work." data-hiring="Business Analyst, Operations Intern" data-prep="Presentation, problem framing, spreadsheets, business communication.">
         <h3>Global Consulting</h3>
         <p>Non-tech consulting firm offering internships and full-time roles.</p>
         <div>
           <span class="role-tag">Business Analyst</span>
           <span class="role-tag">Operations Intern</span>
         </div>
-      </a>
-
+      </button>
     </div>
   </main>
+
+  <div class="modal-overlay" id="companyModal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div>
+          <p class="companies-eyebrow">Company Guide</p>
+          <h2 id="companyModalTitle">Company</h2>
+        </div>
+        <button class="modal-close" id="closeCompanyModalBtn" aria-label="Close">&times;</button>
+      </div>
+      <div class="company-modal-body">
+        <p id="companyModalSummary"></p>
+        <div class="company-modal-section">
+          <strong>Best fit for</strong>
+          <p id="companyModalFocus"></p>
+        </div>
+        <div class="company-modal-section">
+          <strong>Typical roles</strong>
+          <p id="companyModalRoles"></p>
+        </div>
+        <div class="company-modal-section">
+          <strong>What to prepare</strong>
+          <p id="companyModalPrep"></p>
+        </div>
+        <div class="company-modal-actions">
+          <a href="internship.html" class="company-action-btn">See Internships</a>
+          <a href="domain.html" class="company-action-btn company-action-btn-secondary">Explore Domains</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="../js/pages/companies.js"></script>
   <script src="../js/common/auth-storage.js"></script>
   <script src="../js/common/message-badge.js"></script>
 </body>
 </html>
-
-
-
-
-
-

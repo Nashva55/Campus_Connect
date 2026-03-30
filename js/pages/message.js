@@ -1,5 +1,7 @@
-const API_BASE_URL = "http://localhost:5000/api";
-const SOCKET_SERVER_URL = "http://localhost:5000";
+const BACKEND_HOST = window.location.hostname || "localhost";
+const BACKEND_PROTOCOL = window.location.protocol === "https:" ? "https:" : "http:";
+const SOCKET_SERVER_URL = `${BACKEND_PROTOCOL}//${BACKEND_HOST}:5000`;
+const API_BASE_URL = `${SOCKET_SERVER_URL}/api`;
 const UNREAD_STORAGE_KEY = "campusconnectUnreadMessages";
 const token = window.CampusConnectAuth.getToken();
 const storedUser = window.CampusConnectAuth.getUser();
@@ -585,6 +587,20 @@ async function handleResourceSubmit(event) {
   }
 }
 
+async function loadSocketClient() {
+  if (typeof io === "function") {
+    return;
+  }
+
+  await new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = `${SOCKET_SERVER_URL}/socket.io/socket.io.js`;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error("Unable to load live messaging client."));
+    document.head.appendChild(script);
+  });
+}
+
 function connectSocket() {
   if (typeof io !== "function") {
     return;
@@ -661,6 +677,7 @@ if (resourceModal) {
 
 (async function initMessagesPage() {
   try {
+    await loadSocketClient();
     connectSocket();
     await Promise.all([loadConversations(), loadDirectory()]);
 

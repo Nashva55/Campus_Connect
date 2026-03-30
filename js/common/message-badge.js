@@ -1,7 +1,9 @@
 (function () {
   const token = window.CampusConnectAuth.getToken();
   const navLink = document.querySelector('.nav-links a[href="message.html"]');
-  const API_BASE_URL = "http://localhost:5000/api";
+  const BACKEND_HOST = window.location.hostname || "localhost";
+  const BACKEND_PROTOCOL = window.location.protocol === "https:" ? "https:" : "http:";
+  const API_BASE_URL = `${BACKEND_PROTOCOL}//${BACKEND_HOST}:5000/api`;
   const STORAGE_KEY = "campusconnectUnreadMessages";
   let pollHandle = null;
 

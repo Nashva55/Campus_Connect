@@ -9,7 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
   <header class="topbar">
     <div class="logo">Campus<span>Connect</span></div>
     <nav class="nav-links">
@@ -22,88 +21,171 @@
     </nav>
   </header>
 
-  <main class="domain-container">
-    <h2>Explore Tech Domains & Roadmaps</h2>
-    <p>Choose your domain, follow step-by-step roadmaps, and prepare for your tech career.</p>
-
-    <div class="cards-grid">
-
-      <!-- Web Development -->
-      <div class="card">
-        <h3>Web Development</h3>
-        <ul>
-          <li>Frontend: HTML, CSS, JavaScript, React</li>
-          <li>Backend: Node.js, Python, Databases</li>
-          <li>Fullstack Projects & Deployment</li>
-        </ul>
-        <a href="web-roadmap.html" class="btn">View Roadmap</a>
+  <main class="domain-shell">
+    <section class="domain-hero surface-card">
+      <div class="domain-hero-copy">
+        <p class="domain-eyebrow">Career Paths</p>
+        <h1>Choose a domain. Follow a roadmap. Build visible skills.</h1>
+        <p class="domain-subtitle">CampusConnect roadmaps are designed for students who want clarity. Explore a domain, understand what to learn first, and turn that path into projects, certifications, internships, and stronger profiles.</p>
+        <div class="domain-hero-actions">
+          <a href="#domain-grid" class="domain-btn">Explore Domains</a>
+          <a href="certification.html" class="domain-btn domain-btn-secondary">View Certifications</a>
+        </div>
       </div>
-
-      <!-- Mobile Development -->
-      <div class="card">
-        <h3>Mobile Development</h3>
-        <ul>
-          <li>Android (Java/Kotlin), iOS (Swift)</li>
-          <li>Cross-platform: Flutter, React Native</li>
-          <li>Build Apps & Publish</li>
-        </ul>
-        <a href="mobile-roadmap.html" class="btn">View Roadmap</a>
+      <div class="domain-hero-panel">
+        <article class="domain-stat">
+          <span>Domains</span>
+          <strong>6 focused tracks</strong>
+        </article>
+        <article class="domain-stat">
+          <span>Roadmaps</span>
+          <strong>Beginner to project-ready</strong>
+        </article>
+        <article class="domain-stat">
+          <span>Built for</span>
+          <strong>Students across colleges</strong>
+        </article>
       </div>
+    </section>
 
-      <!-- Data Science -->
-      <div class="card">
-        <h3>Data Science & AI</h3>
-        <ul>
-          <li>Python, R, SQL</li>
-          <li>Machine Learning & AI</li>
-          <li>Data Analysis & Visualization</li>
+    <section class="domain-guide-grid">
+      <article class="surface-card guide-card">
+        <p class="domain-eyebrow">How to Use</p>
+        <h2>Use this section like a study planner</h2>
+        <ul class="guide-list">
+          <li>Choose one primary domain based on your interest, strengths, and goals.</li>
+          <li>Follow the roadmap in order so you do not skip important basics.</li>
+          <li>Build the suggested projects and showcase them on your profile and feed.</li>
+          <li>Use related certifications, interview prep, and internships together with the roadmap.</li>
         </ul>
-        <a href="data-roadmap.html" class="btn">View Roadmap</a>
-      </div>
+      </article>
+      <article class="surface-card guide-card">
+        <p class="domain-eyebrow">What You Get</p>
+        <h2>Each roadmap includes</h2>
+        <div class="guide-pill-grid">
+          <span>Core skills</span>
+          <span>Tools and tech</span>
+          <span>Learning order</span>
+          <span>Project ideas</span>
+          <span>Career roles</span>
+          <span>Suggested certificates</span>
+        </div>
+      </article>
+    </section>
 
-      <!-- Cloud & DevOps -->
-      <div class="card">
-        <h3>Cloud & DevOps</h3>
+    <section class="roadmap-overview surface-card">
+      <div>
+        <p class="domain-eyebrow">Best For</p>
+        <h2>Match a domain to your style of work</h2>
+      </div>
+      <div class="overview-grid">
+        <article>
+          <strong>Creative builders</strong>
+          <p>Web, Mobile, and UI-heavy product work</p>
+        </article>
+        <article>
+          <strong>Analytical thinkers</strong>
+          <p>Data Science, AI, and research-driven problem solving</p>
+        </article>
+        <article>
+          <strong>Systems mindset</strong>
+          <p>Cloud, DevOps, and platform reliability</p>
+        </article>
+        <article>
+          <strong>Security and depth</strong>
+          <p>Cybersecurity and protocol-focused engineering</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="domain-grid" id="domain-grid">
+      <article class="domain-card surface-card">
+        <div class="domain-card-top">
+          <span class="domain-tag">Popular</span>
+          <h3>Web Development</h3>
+          <p>Build websites, product dashboards, and full-stack applications with modern frontend and backend tools.</p>
+        </div>
         <ul>
-          <li>AWS, Azure, GCP</li>
-          <li>CI/CD, Docker, Kubernetes</li>
-          <li>Infrastructure as Code</li>
+          <li>HTML, CSS, JavaScript, React</li>
+          <li>Node.js, APIs, databases</li>
+          <li>Portfolio, deployment, and production basics</li>
         </ul>
-        <a href="cloud-roadmap.html" class="btn">View Roadmap</a>
-      </div>
+        <a href="web-roadmap.html" class="domain-btn">Open Roadmap</a>
+      </article>
 
-      <!-- Cybersecurity -->
-      <div class="card">
-        <h3>Cybersecurity</h3>
+      <article class="domain-card surface-card">
+        <div class="domain-card-top">
+          <span class="domain-tag">Apps</span>
+          <h3>Mobile Development</h3>
+          <p>Create Android, iOS, and cross-platform apps with good UI, device features, and publishing workflow knowledge.</p>
+        </div>
         <ul>
-          <li>Network Security & Ethical Hacking</li>
-          <li>Penetration Testing</li>
-          <li>Security Certifications</li>
+          <li>Flutter or React Native</li>
+          <li>State management, APIs, mobile UI</li>
+          <li>Testing, packaging, and release flow</li>
         </ul>
-        <a href="cyber-roadmap.html" class="btn">View Roadmap</a>
-      </div>
+        <a href="mobile-roadmap.html" class="domain-btn">Open Roadmap</a>
+      </article>
 
-      <!-- Blockchain & Web3 -->
-      <div class="card">
-        <h3>Blockchain & Web3</h3>
+      <article class="domain-card surface-card">
+        <div class="domain-card-top">
+          <span class="domain-tag">Data</span>
+          <h3>Data Science & AI</h3>
+          <p>Work with data, insights, statistics, machine learning, and practical AI workflows used in real products.</p>
+        </div>
         <ul>
-          <li>Solidity & Smart Contracts</li>
-          <li>NFT & Decentralized Apps</li>
-          <li>Blockchain Fundamentals</li>
+          <li>Python, SQL, statistics</li>
+          <li>Visualization and model building</li>
+          <li>Datasets, notebooks, and experiments</li>
         </ul>
-        <a href="blockchain-roadmap.html" class="btn">View Roadmap</a>
-      </div>
+        <a href="data-roadmap.html" class="domain-btn">Open Roadmap</a>
+      </article>
 
-    </div>
+      <article class="domain-card surface-card">
+        <div class="domain-card-top">
+          <span class="domain-tag">Infra</span>
+          <h3>Cloud & DevOps</h3>
+          <p>Learn deployment, containers, automation, and the infrastructure practices behind modern engineering teams.</p>
+        </div>
+        <ul>
+          <li>AWS, Azure, or GCP basics</li>
+          <li>Docker, CI/CD, Linux, Git</li>
+          <li>Monitoring and infrastructure as code</li>
+        </ul>
+        <a href="cloud-roadmap.html" class="domain-btn">Open Roadmap</a>
+      </article>
+
+      <article class="domain-card surface-card">
+        <div class="domain-card-top">
+          <span class="domain-tag">Security</span>
+          <h3>Cybersecurity</h3>
+          <p>Understand secure systems, attack surfaces, defensive practice, and ethical testing with strong fundamentals.</p>
+        </div>
+        <ul>
+          <li>Networking, systems, security basics</li>
+          <li>Vulnerability assessment and labs</li>
+          <li>Defensive and offensive workflows</li>
+        </ul>
+        <a href="cyber-roadmap.html" class="domain-btn">Open Roadmap</a>
+      </article>
+
+      <article class="domain-card surface-card">
+        <div class="domain-card-top">
+          <span class="domain-tag">Emerging</span>
+          <h3>Blockchain & Web3</h3>
+          <p>Explore decentralized applications, smart contracts, on-chain logic, and blockchain product thinking.</p>
+        </div>
+        <ul>
+          <li>Blockchain and wallet fundamentals</li>
+          <li>Smart contracts with Solidity</li>
+          <li>DApps, testing, and ecosystem tools</li>
+        </ul>
+        <a href="blockchain-roadmap.html" class="domain-btn">Open Roadmap</a>
+      </article>
+    </section>
   </main>
 
   <script src="../js/common/auth-storage.js"></script>
   <script src="../js/common/message-badge.js"></script>
 </body>
 </html>
-
-
-
-
-
-

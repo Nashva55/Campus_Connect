@@ -1,0 +1,219 @@
+:root {
+  --module-bg: #07101d;
+  --module-surface: rgba(12, 19, 34, 0.94);
+  --module-border: rgba(134, 154, 255, 0.14);
+  --module-text: #eef4ff;
+  --module-muted: #8c98b5;
+  --module-accent: #8b5cf6;
+  --module-accent-strong: #2563eb;
+  --nav-h: 60px;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--module-text);
+  background:
+    radial-gradient(circle at top left, rgba(139, 92, 246, 0.18), transparent 22%),
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 24%),
+    linear-gradient(180deg, #060b15 0%, #09111f 56%, #09121d 100%);
+  font-family: "Inter", sans-serif;
+}
+
+.module-shell {
+  width: min(1200px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: calc(var(--nav-h) + 26px) 0 64px;
+}
+
+.module-card,
+.module-tile,
+.timeline-card,
+.tip-card {
+  border: 1px solid var(--module-border);
+  background: linear-gradient(180deg, rgba(13, 20, 35, 0.95), rgba(8, 14, 26, 0.97));
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(18px);
+}
+
+.module-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) 320px;
+  gap: 20px;
+  padding: 30px;
+  border-radius: 30px;
+}
+
+.module-eyebrow {
+  margin: 0;
+  color: #9aacd0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.module-hero h1,
+.section-head h2,
+.module-tile h3,
+.timeline-card h3,
+.tip-card h3 {
+  margin: 0;
+  font-family: "Sora", sans-serif;
+  letter-spacing: -0.05em;
+}
+
+.module-hero h1 {
+  margin-top: 12px;
+  font-size: clamp(2.2rem, 4vw, 3.3rem);
+}
+
+.module-subtitle,
+.module-tile p,
+.timeline-card p,
+.tip-card p,
+.timeline-list li,
+.action-list li {
+  color: var(--module-muted);
+  line-height: 1.7;
+}
+
+.module-subtitle {
+  margin-top: 16px;
+  max-width: 760px;
+}
+
+.module-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.module-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--module-accent), var(--module-accent-strong));
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.24);
+}
+
+.module-btn.secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(134, 154, 255, 0.14);
+  box-shadow: none;
+}
+
+.hero-stats {
+  display: grid;
+  gap: 14px;
+}
+
+.hero-stat {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(134, 154, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.hero-stat span {
+  color: #9aacd0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hero-stat strong {
+  display: block;
+  margin-top: 10px;
+  font-family: "Sora", sans-serif;
+  font-size: 1.02rem;
+}
+
+.section-head {
+  display: grid;
+  gap: 10px;
+  margin: 30px 0 18px;
+}
+
+.section-head p {
+  margin: 0;
+  color: var(--module-muted);
+}
+
+.module-grid,
+.timeline-grid,
+.tip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.module-tile,
+.timeline-card,
+.tip-card {
+  padding: 22px;
+  border-radius: 24px;
+}
+
+.timeline-list,
+.action-list {
+  margin: 14px 0 0;
+  padding-left: 18px;
+}
+
+.tip-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.tip-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(134, 154, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: #d5def8;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+  .module-hero,
+  .module-grid,
+  .timeline-grid,
+  .tip-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .module-shell {
+    width: calc(100% - 24px);
+    padding-top: calc(var(--nav-h) + 18px);
+  }
+
+  .module-hero,
+  .module-tile,
+  .timeline-card,
+  .tip-card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .module-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
