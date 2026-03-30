@@ -74,12 +74,15 @@ const postSchema = new mongoose.Schema(
   }
 );
 
-postSchema.methods.toClientObject = function toClientObject(currentUserId) {
+postSchema.methods.toClientObject = function toClientObject(currentUserId, extras = {}) {
+  const commentAuthorPhotos = extras.commentAuthorPhotos || {};
+
   return {
     id: this._id,
     userId: this.userId,
     authorName: this.authorName,
     authorEmail: this.authorEmail,
+    authorPhoto: extras.authorPhoto || "",
     caption: this.caption,
     mediaURL: this.mediaURL,
     mediaType: this.mediaType,
@@ -89,6 +92,7 @@ postSchema.methods.toClientObject = function toClientObject(currentUserId) {
       id: comment._id,
       userId: comment.userId,
       authorName: comment.authorName,
+      authorPhoto: commentAuthorPhotos[String(comment.userId)] || "",
       text: comment.text,
       createdAt: comment.createdAt
     })),

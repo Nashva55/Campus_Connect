@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let composerMediaDataURL = "";
   let composerMediaType = "";
 
-  composerAvatar.textContent = getInitials(storedUser.name);
+  if (storedUser.profilePhoto) { composerAvatar.style.backgroundImage = `url(${storedUser.profilePhoto})`; composerAvatar.style.backgroundSize = "cover"; composerAvatar.style.backgroundPosition = "center"; composerAvatar.textContent = ""; } else { composerAvatar.textContent = getInitials(storedUser.name); }
   composerName.textContent = storedUser.name || "Student";
 
   function loadSavedPostIds() {
@@ -71,6 +71,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       .slice(0, 2)
       .map((part) => part[0].toUpperCase())
       .join("") || "SN";
+  }
+
+  function createAvatarMarkup(name, className, photo = "") {
+    const style = photo
+      ? ` style="background-image:url('${escapeHTML(photo)}');background-size:cover;background-position:center;color:transparent;font-size:0;"`
+      : "";
+    return `<div class="${className}"${style}>${photo ? "" : escapeHTML(getInitials(name))}</div>`;
   }
 
   function formatTime(date) {
@@ -180,7 +187,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     searchResults.innerHTML = matches.map((user) => `
       <article class="search-result-card">
         <div class="search-result-top">
-          <div class="suggestion-avatar">${escapeHTML(getInitials(user.name))}</div>
+          ${createAvatarMarkup(user.name, "suggestion-avatar", user.profilePhoto)}
           <div class="search-result-copy">
             <strong>${escapeHTML(user.name)}</strong>
             <p>${user.followersCount} followers</p>
@@ -232,7 +239,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     suggestionList.innerHTML = prioritized.map((user) => `
       <article class="suggestion-item">
         <div class="suggestion-top">
-          <div class="suggestion-avatar">${escapeHTML(getInitials(user.name))}</div>
+          ${createAvatarMarkup(user.name, "suggestion-avatar", user.profilePhoto)}
           <div class="suggestion-copy">
             <strong>${escapeHTML(user.name)}</strong>
             <p>${user.followersCount} followers</p>
@@ -285,7 +292,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div class="feed-card-topline">
               <div class="feed-card-head">
                 <a class="feed-author-link" href="user-profile.html?id=${encodeURIComponent(post.userId)}">
-                  <div class="feed-avatar">${escapeHTML(getInitials(post.authorName))}</div>
+                  ${createAvatarMarkup(post.authorName, "feed-avatar", post.authorPhoto)}
                 </a>
                 <div class="feed-author">
                   <strong><a class="feed-author-link" href="user-profile.html?id=${encodeURIComponent(post.userId)}">${escapeHTML(post.authorName)}</a></strong>
@@ -635,3 +642,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadFeedData();
 });
+

@@ -50,6 +50,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       .join("") || "SN";
   }
 
+  function createAvatarMarkup(name, className, photo = "") {
+    const style = photo
+      ? ` style="background-image:url('${escapeHTML(photo)}');background-size:cover;background-position:center;color:transparent;font-size:0;"`
+      : "";
+    return `<div class="${className}"${style}>${photo ? "" : escapeHTML(getInitials(name))}</div>`;
+  }
 
   function formatTime(date) {
     const parsedDate = new Date(date);
@@ -115,7 +121,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       throw new Error(data.message || "Unable to load profile.");
     }
 
-    profileAvatar.textContent = getInitials(data.user.name);
+    if (data.user.profilePhoto) { profileAvatar.style.backgroundImage = `url(${data.user.profilePhoto})`; profileAvatar.style.backgroundSize = "cover"; profileAvatar.style.backgroundPosition = "center"; profileAvatar.textContent = ""; } else { profileAvatar.style.backgroundImage = "none"; profileAvatar.textContent = getInitials(data.user.name); }
     profileName.textContent = data.user.name;
     renderFollowState(data.user);
     renderPosts(data.posts);
@@ -145,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       connectionsList.innerHTML = data.users.map((user) => `
         <a class="connection-item" href="user-profile.html?id=${encodeURIComponent(user.id)}">
-          <div class="connection-avatar">${escapeHTML(getInitials(user.name))}</div>
+          ${createAvatarMarkup(user.name, "connection-avatar", user.profilePhoto)}
           <div class="connection-copy">
             <strong>${escapeHTML(user.name)}</strong>
           </div>
@@ -210,4 +216,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     followButton.style.display = "none";
   }
 });
+
+
 

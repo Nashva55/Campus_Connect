@@ -28,7 +28,7 @@ async function findConversationForUser(conversationId, userId) {
   return Conversation.findOne({
     _id: conversationId,
     members: userId
-  }).populate("members", "name email role");
+  }).populate("members", "name email role profilePhoto");
 }
 
 function ensureReadState(conversation, userId, timestamp = new Date()) {
@@ -63,7 +63,7 @@ async function emitConversationUpdate(request, conversation, memberIds) {
 router.get("/conversations", verifyToken, async (request, response) => {
   try {
     const conversations = await Conversation.find({ members: request.user._id })
-      .populate("members", "name email role")
+      .populate("members", "name email role profilePhoto")
       .sort({ lastMessageAt: -1, updatedAt: -1 });
 
     response.json({
@@ -94,7 +94,7 @@ router.post("/conversations/direct", verifyToken, async (request, response) => {
     let conversation = await Conversation.findOne({
       type: "direct",
       members: { $all: [request.user._id, targetUserId], $size: 2 }
-    }).populate("members", "name email role");
+    }).populate("members", "name email role profilePhoto");
 
     if (!conversation) {
       conversation = await Conversation.create({
@@ -108,7 +108,7 @@ router.post("/conversations/direct", verifyToken, async (request, response) => {
         ]
       });
 
-      conversation = await Conversation.findById(conversation._id).populate("members", "name email role");
+      conversation = await Conversation.findById(conversation._id).populate("members", "name email role profilePhoto");
     }
 
     await emitConversationUpdate(request, conversation, conversation.members.map((member) => String(member._id)));
@@ -156,7 +156,7 @@ router.post("/conversations/group", verifyToken, async (request, response) => {
       }))
     });
 
-    conversation = await Conversation.findById(conversation._id).populate("members", "name email role");
+    conversation = await Conversation.findById(conversation._id).populate("members", "name email role profilePhoto");
     await emitConversationUpdate(request, conversation, conversation.members.map((member) => String(member._id)));
 
     response.status(201).json({

@@ -5,6 +5,10 @@ const { verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
 
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 async function mapUsers(list, currentUser) {
   const followingSet = new Set(currentUser.following.map((id) => id.toString()));
 
@@ -13,6 +17,75 @@ async function mapUsers(list, currentUser) {
     isFollowing: followingSet.has(String(user._id))
   }));
 }
+
+function buildPhotoMap(users) {
+  return users.reduce((map, user) => {
+    map[String(user._id)] = user.profilePhoto || "";
+    return map;
+  }, {});
+}
+
+async function buildPostsForViewer(posts, currentUserId) {
+  const ids = new Set();
+
+  posts.forEach((post) => {
+    ids.add(String(post.userId));
+    post.comments.forEach((comment) => ids.add(String(comment.userId)));
+  });
+
+  const users = await User.find({ _id: { $in: [...ids] } }, "profilePhoto");
+  const photoMap = buildPhotoMap(users);
+
+  return posts.map((post) => post.toClientObject(currentUserId, {
+    authorPhoto: photoMap[String(post.userId)] || "",
+    commentAuthorPhotos: photoMap
+  }));
+}
+
+router.put("/me/profile", verifyToken, async (request, response) => {
+  try {
+    const currentUser = await User.findById(request.user._id);
+
+    if (!currentUser) {
+      return response.status(404).json({ message: "User not found." });
+    }
+
+    const nextName = request.body.name === undefined ? currentUser.name : String(request.body.name || "").trim();
+    const nextEmail = request.body.email === undefined ? currentUser.email : String(request.body.email || "").trim().toLowerCase();
+    const nextProfilePhoto = request.body.profilePhoto === undefined ? currentUser.profilePhoto : String(request.body.profilePhoto || "").trim();
+
+    if (!nextName) {
+      return response.status(400).json({ message: "Name is required." });
+    }
+
+    if (!nextEmail || !isValidEmail(nextEmail)) {
+      return response.status(400).json({ message: "Enter a valid email address." });
+    }
+
+    if (nextProfilePhoto && !nextProfilePhoto.startsWith("data:image/")) {
+      return response.status(400).json({ message: "Profile photo format is invalid." });
+    }
+
+    if (nextEmail !== currentUser.email) {
+      const existingUser = await User.findOne({ email: nextEmail, _id: { $ne: currentUser._id } });
+      if (existingUser) {
+        return response.status(409).json({ message: "A user with this email already exists." });
+      }
+    }
+
+    currentUser.name = nextName;
+    currentUser.email = nextEmail;
+    currentUser.profilePhoto = nextProfilePhoto;
+    await currentUser.save();
+
+    response.json({
+      message: "Profile updated successfully.",
+      user: currentUser.toSafeObject()
+    });
+  } catch (error) {
+    response.status(500).json({ message: "Unable to update profile.", error: error.message });
+  }
+});
 
 router.get("/me/network", verifyToken, async (request, response) => {
   try {
@@ -76,7 +149,7 @@ router.get("/:id/profile", verifyToken, async (request, response) => {
         ...user.toSafeObject(),
         isFollowing
       },
-      posts: posts.map((post) => post.toClientObject(request.user._id))
+      posts: await buildPostsForViewer(posts, request.user._id)
     });
   } catch (error) {
     response.status(500).json({ message: "Unable to load user profile.", error: error.message });

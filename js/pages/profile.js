@@ -55,9 +55,74 @@ function getInitials(name) {
     .join("") || "SN";
 }
 
+function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
-function createAvatarMarkup(name, className = "post-card-avatar") {
-  return `<div class="${className}">${escapeHTML(getInitials(name))}</div>`;
+function formatTime(date) {
+  const parsedDate = new Date(date);
+  const diff = Math.floor((Date.now() - parsedDate.getTime()) / 1000);
+  if (diff < 60) return "Just now";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return parsedDate.toLocaleDateString();
+}
+
+function buildAvatarStyle(photo) {
+  if (!photo) {
+    return "";
+  }
+
+  return ` style="background-image:url('${escapeHTML(photo)}');background-size:cover;background-position:center;color:transparent;font-size:0;"`;
+}
+
+function createAvatarMarkup(name, className = "post-card-avatar", photo = "") {
+  return `<div class="${className}"${buildAvatarStyle(photo)}>${photo ? "" : escapeHTML(getInitials(name))}</div>`;
+}
+
+function setProfilePhotoVisual(photo, name = storedUser.name) {
+  const pic = document.getElementById("profile-pic-display");
+  const preview = document.getElementById("pickerPreview");
+  const removeBtn = document.getElementById("removePhotoBtn");
+
+  if (photo) {
+    if (pic) {
+      pic.style.backgroundImage = `url(${photo})`;
+      pic.style.backgroundSize = "cover";
+      pic.style.backgroundPosition = "center";
+      pic.innerHTML = '<div class="photo-overlay" onclick="openModal()">Change</div>';
+    }
+
+    if (preview) {
+      preview.innerHTML = `<img src="${photo}" alt="avatar">`;
+    }
+
+    if (removeBtn) {
+      removeBtn.style.display = "block";
+    }
+
+    return;
+  }
+
+  if (pic) {
+    pic.style.backgroundImage = "none";
+    pic.style.backgroundSize = "";
+    pic.style.backgroundPosition = "";
+    pic.innerHTML = `<span class="avatar-icon">${getInitials(name)}</span><div class="photo-overlay" onclick="openModal()">Change</div>`;
+  }
+
+  if (preview) {
+    preview.innerHTML = `<span id="pickerIcon">${getInitials(name)}</span>`;
+  }
+
+  if (removeBtn) {
+    removeBtn.style.display = "none";
+  }
 }
 
 function syncFollowStats(user = storedUser) {
@@ -78,24 +143,16 @@ function syncProfileFromStorage() {
   const editName = document.getElementById("edit-name");
   const editEmail = document.getElementById("edit-email");
   const displayEmail = document.getElementById("display-email");
-  const avatarIcon = document.querySelector(".avatar-icon");
-  const pickerPreview = document.getElementById("pickerPreview");
 
   displayName.innerText = storedUser.name || "Student Name";
   editName.value = storedUser.name || "";
   editEmail.value = storedUser.email || "";
+
   if (displayEmail) {
     displayEmail.textContent = storedUser.email || "student@campusconnect.com";
   }
 
-  if (avatarIcon) {
-    avatarIcon.textContent = getInitials(storedUser.name);
-  }
-
-  if (pickerPreview && !pickerPreview.querySelector("img")) {
-    pickerPreview.innerHTML = `<span id="pickerIcon">${getInitials(storedUser.name)}</span>`;
-  }
-
+  setProfilePhotoVisual(storedUser.profilePhoto || "", storedUser.name);
   syncFollowStats(storedUser);
 }
 
@@ -107,8 +164,9 @@ async function loadOwnProfileStats() {
 
     storedUser.followersCount = data.user.followersCount || 0;
     storedUser.followingCount = data.user.followingCount || 0;
+    storedUser.profilePhoto = data.user.profilePhoto || "";
     window.CampusConnectAuth.updateUser(storedUser);
-    syncFollowStats(storedUser);
+    syncProfileFromStorage();
   } catch {
     syncFollowStats(storedUser);
   }
@@ -119,19 +177,7 @@ function openModal() {
   document.getElementById("edit-name").value = document.getElementById("display-name").innerText;
   document.getElementById("edit-college").value = document.getElementById("display-college").innerText;
   document.getElementById("edit-email").value = storedUser.email || "";
-
-  const pic = document.getElementById("profile-pic-display");
-  const preview = document.getElementById("pickerPreview");
-  const removeBtn = document.getElementById("removePhotoBtn");
-
-  if (pic.style.backgroundImage && pic.style.backgroundImage !== "none") {
-    const url = pic.style.backgroundImage.slice(5, -2);
-    preview.innerHTML = `<img src="${url}" alt="avatar">`;
-    removeBtn.style.display = "block";
-  } else {
-    preview.innerHTML = `<span id="pickerIcon">${getInitials(storedUser.name)}</span>`;
-    removeBtn.style.display = "none";
-  }
+  setProfilePhotoVisual(storedUser.profilePhoto || "", storedUser.name);
 }
 
 function closeModal() {
@@ -160,43 +206,50 @@ function removeProfilePhoto() {
   document.getElementById("profile-pic-display").dataset.pendingPhoto = "remove";
 }
 
-editForm.addEventListener("submit", function handleEditSubmit(event) {
+editForm.addEventListener("submit", async function handleEditSubmit(event) {
   event.preventDefault();
 
   const updatedName = document.getElementById("edit-name").value.trim();
   const updatedCollege = document.getElementById("edit-college").value.trim();
   const updatedEmail = document.getElementById("edit-email").value.trim();
-
-  document.getElementById("display-name").innerText = updatedName;
-  document.getElementById("display-college").innerText = updatedCollege;
-  const displayEmail = document.getElementById("display-email");
-  if (displayEmail) {
-    displayEmail.textContent = updatedEmail || "student@campusconnect.com";
-  }
-
-  storedUser.name = updatedName;
-  storedUser.email = updatedEmail;
-  window.CampusConnectAuth.updateUser(storedUser);
-
   const pic = document.getElementById("profile-pic-display");
   const pending = pic.dataset.pendingPhoto;
+  const updatedProfilePhoto = pending === "remove"
+    ? ""
+    : (pending || storedUser.profilePhoto || "");
 
-  if (pending === "remove") {
-    pic.style.backgroundImage = "none";
-    pic.style.backgroundSize = "";
-    pic.innerHTML = `<span class="avatar-icon">${getInitials(updatedName)}</span><div class="photo-overlay" onclick="openModal()">Change</div>`;
-  } else if (pending) {
-    pic.style.backgroundImage = `url(${pending})`;
-    pic.style.backgroundSize = "cover";
-    pic.style.backgroundPosition = "center";
-    pic.innerHTML = `<div class="photo-overlay" onclick="openModal()">Change</div>`;
-  } else if (!pic.style.backgroundImage || pic.style.backgroundImage === "none") {
-    pic.innerHTML = `<span class="avatar-icon">${getInitials(updatedName)}</span><div class="photo-overlay" onclick="openModal()">Change</div>`;
+  try {
+    const data = await apiRequest("/users/me/profile", {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        name: updatedName,
+        email: updatedEmail,
+        profilePhoto: updatedProfilePhoto
+      })
+    });
+
+    document.getElementById("display-name").innerText = updatedName;
+    document.getElementById("display-college").innerText = updatedCollege;
+    const displayEmail = document.getElementById("display-email");
+    if (displayEmail) {
+      displayEmail.textContent = data.user.email || "student@campusconnect.com";
+    }
+
+    storedUser.name = data.user.name;
+    storedUser.email = data.user.email;
+    storedUser.profilePhoto = data.user.profilePhoto || "";
+    storedUser.followersCount = data.user.followersCount || storedUser.followersCount || 0;
+    storedUser.followingCount = data.user.followingCount || storedUser.followingCount || 0;
+    window.CampusConnectAuth.updateUser(storedUser);
+
+    setProfilePhotoVisual(storedUser.profilePhoto, storedUser.name);
+    delete pic.dataset.pendingPhoto;
+    closeModal();
+    renderPosts();
+  } catch (error) {
+    alert(error.message || "Unable to update profile.");
   }
-
-  delete pic.dataset.pendingPhoto;
-  closeModal();
-  renderPosts();
 });
 
 editModal.addEventListener("click", (event) => {
@@ -385,7 +438,7 @@ function buildPostCard(post) {
     ${media}
     <div class="post-card-body">
       <div class="post-card-author">
-        ${createAvatarMarkup(post.authorName)}
+        ${createAvatarMarkup(post.authorName, "post-card-avatar", post.authorPhoto)}
         <span class="post-card-name">${escapeHTML(post.authorName)}</span>
         <span class="post-card-time">${formatTime(post.createdAt)}</span>
       </div>
@@ -482,7 +535,7 @@ function openPostViewer(id, focusComment = false) {
   }
 
   document.getElementById("viewerMedia").innerHTML = media;
-  document.getElementById("viewerAuthor").innerHTML = `${createAvatarMarkup(post.authorName, "comment-avatar")} ${escapeHTML(post.authorName)}`;
+  document.getElementById("viewerAuthor").innerHTML = `${createAvatarMarkup(post.authorName, "comment-avatar", post.authorPhoto)} ${escapeHTML(post.authorName)}`;
   document.getElementById("viewerCaption").textContent = post.caption || "";
   document.getElementById("viewerTime").textContent = formatTime(post.createdAt);
 
@@ -534,7 +587,7 @@ function renderComments(post) {
     const item = document.createElement("div");
     item.className = "comment-item";
     item.innerHTML = `
-      ${createAvatarMarkup(comment.authorName, "comment-avatar")}
+      ${createAvatarMarkup(comment.authorName, "comment-avatar", comment.authorPhoto)}
       <div class="comment-body">
         <div class="comment-name">${escapeHTML(comment.authorName)}</div>
         <div class="comment-text">${escapeHTML(comment.text)}</div>
@@ -588,7 +641,7 @@ async function openConnectionsModal(type) {
 
     connectionsList.innerHTML = data.users.map((user) => `
       <a class="connection-item" href="user-profile.html?id=${encodeURIComponent(user.id)}">
-        <div class="connection-avatar">${escapeHTML(getInitials(user.name))}</div>
+        ${createAvatarMarkup(user.name, "connection-avatar", user.profilePhoto)}
         <div class="connection-copy">
           <strong>${escapeHTML(user.name)}</strong>
         </div>
@@ -632,24 +685,6 @@ function updateCertifications(value) {
   });
 }
 
-function formatTime(date) {
-  const parsedDate = new Date(date);
-  const diff = Math.floor((Date.now() - parsedDate.getTime()) / 1000);
-  if (diff < 60) return "Just now";
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return parsedDate.toLocaleDateString();
-}
-
-function escapeHTML(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
 window.openModal = openModal;
 window.closeModal = closeModal;
 window.handleProfilePhotoSelect = handleProfilePhotoSelect;
@@ -677,4 +712,3 @@ window.closeConnectionsModal = closeConnectionsModal;
 syncProfileFromStorage();
 loadOwnProfileStats();
 loadPosts();
-

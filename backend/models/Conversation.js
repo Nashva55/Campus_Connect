@@ -62,7 +62,8 @@ conversationSchema.methods.toClientObject = function toClientObject(currentUserI
     id: member._id || member.id || member,
     name: member.name,
     email: member.email,
-    role: member.role
+    role: member.role,
+    profilePhoto: member.profilePhoto || ""
   }));
 
   const otherMember = this.type === "direct"
@@ -75,7 +76,8 @@ conversationSchema.methods.toClientObject = function toClientObject(currentUserI
     name: this.type === "group" ? this.name : (otherMember?.name || "Direct Chat"),
     subtitle: this.type === "group"
       ? `${memberObjects.length} members`
-      : (otherMember?.email || "Direct conversation"),
+      : "Direct conversation",
+    avatarPhoto: this.type === "group" ? "" : (otherMember?.profilePhoto || ""),
     members: memberObjects,
     lastMessageText: this.lastMessageText,
     lastMessageSenderName: this.lastMessageSenderName,

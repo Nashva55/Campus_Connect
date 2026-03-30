@@ -81,6 +81,13 @@ function getInitials(name) {
     .join("") || "CC";
 }
 
+function createAvatarMarkup(name, className = "entity-avatar", photo = "") {
+  const style = photo
+    ? ` style="background-image:url('${escapeHTML(photo)}');background-size:cover;background-position:center;color:transparent;font-size:0;"`
+    : "";
+  return `<div class="${className}"${style}>${photo ? "" : escapeHTML(getInitials(name))}</div>`;
+}
+
 function escapeHTML(value) {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -225,7 +232,7 @@ function renderConversationList() {
     item.className = `conversation-item${conversation.id === activeConversationId ? " active" : ""}${conversation.unreadCount ? " has-unread" : ""}`;
     item.innerHTML = `
       <div class="conversation-top">
-        <div class="entity-avatar">${escapeHTML(getInitials(conversation.name))}</div>
+        ${createAvatarMarkup(conversation.name, "entity-avatar", conversation.avatarPhoto)}
         <div class="entity-copy">
           <strong>${escapeHTML(conversation.name)}</strong>
           <p>${escapeHTML(conversation.subtitle || (conversation.isGroup ? "Group chat" : "Direct chat"))}</p>
@@ -263,7 +270,7 @@ function renderDirectory() {
     card.className = "user-card";
     card.innerHTML = `
       <div class="user-card-top">
-        <div class="entity-avatar">${escapeHTML(getInitials(user.name))}</div>
+        ${createAvatarMarkup(user.name, "entity-avatar", user.profilePhoto)}
         <div class="entity-copy">
           <strong>${escapeHTML(user.name)}</strong>
         </div>
@@ -287,7 +294,7 @@ function renderGroupMemberOptions() {
     label.className = "member-option";
     label.innerHTML = `
       <input type="checkbox" name="groupMember" value="${escapeHTML(user.id)}">
-      <div class="entity-avatar">${escapeHTML(getInitials(user.name))}</div>
+      ${createAvatarMarkup(user.name, "entity-avatar", user.profilePhoto)}
       <div class="member-option-copy">
         <strong>${escapeHTML(user.name)}</strong>
       </div>`;
@@ -360,7 +367,7 @@ async function openConversation(conversationId) {
 }
 
 function hydrateConversationHeader(conversation) {
-  activeChatAvatar.textContent = getInitials(conversation.name);
+  if (conversation.avatarPhoto) { activeChatAvatar.style.backgroundImage = `url(${conversation.avatarPhoto})`; activeChatAvatar.style.backgroundSize = "cover"; activeChatAvatar.style.backgroundPosition = "center"; activeChatAvatar.textContent = ""; } else { activeChatAvatar.style.backgroundImage = "none"; activeChatAvatar.textContent = getInitials(conversation.name); }
   activeChatName.textContent = conversation.name;
   activeChatSubtitle.textContent = conversation.subtitle || (conversation.isGroup ? "Group chat" : "Direct chat");
   activeChatMeta.textContent = conversation.isGroup
@@ -670,3 +677,4 @@ if (resourceModal) {
     showEmptyState();
   }
 })();
+

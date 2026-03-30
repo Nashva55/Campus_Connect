@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema(
       enum: ["student", "admin"],
       default: "student"
     },
+    profilePhoto: {
+      type: String,
+      default: ""
+    },
     followers: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "User",
@@ -60,6 +64,7 @@ userSchema.methods.toSafeObject = function toSafeObject() {
     name: this.name,
     email: this.email,
     role: this.role,
+    profilePhoto: this.profilePhoto || "",
     followersCount: this.followers.length,
     followingCount: this.following.length,
     createdAt: this.createdAt,

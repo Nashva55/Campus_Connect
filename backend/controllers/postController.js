@@ -1,11 +1,41 @@
 const Post = require("../models/Post");
+const User = require("../models/User");
+
+async function buildPhotoMap(posts) {
+  const ids = new Set();
+
+  posts.forEach((post) => {
+    ids.add(String(post.userId));
+    post.comments.forEach((comment) => ids.add(String(comment.userId)));
+  });
+
+  const users = await User.find({ _id: { $in: [...ids] } }, "profilePhoto");
+  return users.reduce((map, user) => {
+    map[String(user._id)] = user.profilePhoto || "";
+    return map;
+  }, {});
+}
+
+async function serializePosts(posts, currentUserId) {
+  const photoMap = await buildPhotoMap(posts);
+
+  return posts.map((post) => post.toClientObject(currentUserId, {
+    authorPhoto: photoMap[String(post.userId)] || "",
+    commentAuthorPhotos: photoMap
+  }));
+}
+
+async function serializePost(post, currentUserId) {
+  const [serialized] = await serializePosts([post], currentUserId);
+  return serialized;
+}
 
 async function getPosts(request, response) {
   try {
     const posts = await Post.find().sort({ createdAt: -1 });
 
     response.json({
-      posts: posts.map((post) => post.toClientObject(request.user._id))
+      posts: await serializePosts(posts, request.user._id)
     });
   } catch (error) {
     response.status(500).json({ message: "Unable to fetch posts.", error: error.message });
@@ -31,7 +61,7 @@ async function createPost(request, response) {
 
     response.status(201).json({
       message: "Post created successfully.",
-      post: post.toClientObject(request.user._id)
+      post: await serializePost(post, request.user._id)
     });
   } catch (error) {
     response.status(500).json({ message: "Unable to create post.", error: error.message });
@@ -78,7 +108,7 @@ async function toggleLike(request, response) {
 
     response.json({
       message: "Post like updated.",
-      post: post.toClientObject(request.user._id)
+      post: await serializePost(post, request.user._id)
     });
   } catch (error) {
     response.status(500).json({ message: "Unable to update like.", error: error.message });
@@ -109,7 +139,7 @@ async function addComment(request, response) {
 
     response.status(201).json({
       message: "Comment added successfully.",
-      post: post.toClientObject(request.user._id)
+      post: await serializePost(post, request.user._id)
     });
   } catch (error) {
     response.status(500).json({ message: "Unable to add comment.", error: error.message });
@@ -129,7 +159,7 @@ async function sharePost(request, response) {
 
     response.json({
       message: "Post shared successfully.",
-      post: post.toClientObject(request.user._id)
+      post: await serializePost(post, request.user._id)
     });
   } catch (error) {
     response.status(500).json({ message: "Unable to share post.", error: error.message });

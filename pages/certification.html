@@ -4,55 +4,74 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Free Online Certifications | CampusConnect</title>
-
-  <link rel="stylesheet" href="../css/pages/certification.css" />
   <link rel="stylesheet" href="../css/common/common.css">
+  <link rel="stylesheet" href="../css/pages/certification.css" />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <header class="topbar">
+    <div class="logo">Campus<span>Connect</span></div>
+    <nav class="nav-links">
+      <a href="profile.html">Profile</a>
+      <a href="feed.html">Feed</a>
+      <a href="message.html">Messages</a>
+      <a href="notification.html">Notifications</a>
+      <a href="event.html">Events</a>
+      <a href="more.html">More</a>
+    </nav>
+  </header>
 
-<header class="topbar">
- <div class="logo">Campus<span>Connect</span></div>
-  <nav class="nav-links">
-    <a href="profile.html">Profile</a>
-    <a href="feed.html">Feed</a>
-    <a href="message.html">Messages</a>
-    <a href="notification.html">Notifications</a>
-    <a href="event.html">Events</a>
-    <a href="more.html">More</a>
-  </nav>
-</header>
+  <main class="cert-shell">
+    <section class="cert-hero surface-card">
+      <div class="cert-hero-copy">
+        <p class="cert-eyebrow">Learning</p>
+        <h1>Certifications</h1>
+        <p class="cert-subtitle">Explore curated online certifications from trusted providers and strengthen your profile with practical skills.</p>
+      </div>
+      <div class="cert-hero-stats">
+        <article class="cert-stat-card">
+          <span class="cert-stat-label">Providers</span>
+          <strong>6+</strong>
+        </article>
+        <article class="cert-stat-card">
+          <span class="cert-stat-label">Focus</span>
+          <strong>Career Ready</strong>
+        </article>
+      </div>
+    </section>
 
-<main class="cert-container">
+    <section class="cert-controls surface-card">
+      <div class="cert-search-wrap">
+        <label for="searchInput">Search courses</label>
+        <input type="text" id="searchInput" placeholder="Search by skill, provider, or course title">
+      </div>
+      <div class="cert-filter-wrap">
+        <label for="skillFilter">Filter by skill</label>
+        <select id="skillFilter">
+          <option value="all">All Skills</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Web Development">Web Development</option>
+          <option value="Data Science">Data Science</option>
+          <option value="Cloud">Cloud</option>
+          <option value="Cybersecurity">Cybersecurity</option>
+          <option value="Programming">Programming</option>
+        </select>
+      </div>
+    </section>
 
-  <h1>Free Online Certifications</h1>
-  <p class="subtitle">Learn new skills and earn certificates from trusted platforms</p>
+    <section class="cert-results-head">
+      <div>
+        <p class="cert-eyebrow">Catalog</p>
+        <h2>Recommended courses</h2>
+      </div>
+      <p class="cert-results-meta" id="resultsMeta">Showing all certifications</p>
+    </section>
 
-<div class="filters">
-  <input type="text" id="searchInput" placeholder="Search by skill or course...">
+    <section class="course-grid" id="courseGrid"></section>
+  </main>
 
-  <select id="skillFilter">
-    <option value="all">All Skills</option>
-    <option value="Marketing">Marketing</option>
-    <option value="Web Development">Web Development</option>
-    <option value="Data Science">Data Science</option>
-    <option value="Cloud">Cloud</option>
-    <option value="Cybersecurity">Cybersecurity</option>
-    <option value="Programming">Programming</option>
-  </select>
-</div>
-
-<div class="course-grid" id="courseGrid"></div>
-</main>
-
-<script src="../js/pages/certification.js"></script>
   <script src="../js/common/auth-storage.js"></script>
+  <script src="../js/pages/certification.js"></script>
   <script src="../js/common/message-badge.js"></script>
 </body>
 </html>
-
-
-
-
-
-
